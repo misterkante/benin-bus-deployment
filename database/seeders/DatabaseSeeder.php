@@ -17,22 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Factories
-
-        \App\Models\User::factory(10)->create();
-
-        \App\Models\User::factory()->create([
-            'nom_compagnie' => 'Test User',
-            'email' => 'test@test.com',
+         // Seeders
+         $this->call([
+            RolesSeeder::class,
+            AdminsSeeder::class,
+            ArretsSeeder::class,
+            LignesSeeder::class,
         ]);
 
+        // Factories
+        \App\Models\User::factory(50)->create();
         \App\Models\Bu::factory(30)->create();
+
+
         //Voyage::factory(10)->create(); //manque de trajet
 
-        // Seeders
-        $this->call([
-            RolesSeeder::class,
-            //AdminsSeeder::class,
-        ]);
+
     }
 }

@@ -12,14 +12,14 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Arret
- * 
+ *
  * @property int $id
  * @property string $nom
  * @property string $longitude
  * @property string $latitude
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Collection|Ligne[] $lignes
  * @property Collection|Ticket[] $tickets
  * @property Collection|Trajet[] $trajets
@@ -32,6 +32,8 @@ class Arret extends Model
 
 	protected $fillable = [
 		'nom',
+        'departement',
+        'pays',
 		'longitude',
 		'latitude'
 	];

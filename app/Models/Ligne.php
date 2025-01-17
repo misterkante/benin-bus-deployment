@@ -12,13 +12,13 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Ligne
- * 
+ *
  * @property int $id
  * @property string $nom
  * @property int|null $compagnie_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property User|null $user
  * @property Collection|Arret[] $arrets
  * @property Collection|Trajet[] $trajets
@@ -35,6 +35,7 @@ class Ligne extends Model
 
 	protected $fillable = [
 		'nom',
+        'distance_km',
 		'compagnie_id'
 	];
 

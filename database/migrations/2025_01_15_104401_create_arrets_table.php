@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('arrets', function (Blueprint $table) {
             $table->id();
-            $table->string('nom');
+            $table->string('nom')->unique();
+            $table->string('departement');
+            $table->string('pays');
             //localisation
-            $table->string('longitude');
-            $table->string('latitude');
+            $table->string('longitude')->nullable();
+            $table->string('latitude')->nullable();
             $table->timestamps();
         });
     }
