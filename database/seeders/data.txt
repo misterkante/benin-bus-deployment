@@ -1,19 +1,4 @@
-<?php
-
-namespace Database\Seeders;
-
-use App\Models\Arret;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
-class ArretsSeeder extends Seeder
-{
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
-    {
-        $arrets =
+$arrets =
             [
                 [
                     "ville" => "Cotonou",
@@ -30,7 +15,7 @@ class ArretsSeeder extends Seeder
                     "departement" => "Atlantique"
                 ],
                 [
-                    "ville" => "Godomey",
+                    "ville" => "Godomè",
                     "latitude" => "6.3667",
                     "longitude" => "2.3500",
                     "pays" => "Benin",
@@ -107,7 +92,7 @@ class ArretsSeeder extends Seeder
                     "departement" => "Zou"
                 ],
                 [
-                    "ville" => "Djakotomey",
+                    "ville" => "Djakotomé",
                     "latitude" => "6.9000",
                     "longitude" => "1.7167",
                     "pays" => "Benin",
@@ -226,7 +211,7 @@ class ArretsSeeder extends Seeder
                     "departement" => "Borgou"
                 ],
                 [
-                    "ville" => "Dassa-Zoumè",
+                    "ville" => "Dassa-Zoumé",
                     "latitude" => "7.7500",
                     "longitude" => "2.1833",
                     "pays" => "Benin",
@@ -240,7 +225,7 @@ class ArretsSeeder extends Seeder
                     "departement" => "Atacora"
                 ],
                 [
-                    "ville" => "Bantè",
+                    "ville" => "Banté",
                     "latitude" => "8.4167",
                     "longitude" => "1.8833",
                     "pays" => "Benin",
@@ -444,7 +429,7 @@ class ArretsSeeder extends Seeder
                     "departement" => "Atlantique"
                 ],
                 [
-                    "ville" => "Covè",
+                    "ville" => "Cové",
                     "latitude" => "7.2333",
                     "longitude" => "2.3000",
                     "pays" => "Benin",
@@ -479,7 +464,7 @@ class ArretsSeeder extends Seeder
                     "departement" => "Ouémé"
                 ],
                 [
-                    "ville" => "Comè",
+                    "ville" => "Comé",
                     "latitude" => "6.4000",
                     "longitude" => "1.8833",
                     "pays" => "Benin",
@@ -1800,53 +1785,70 @@ class ArretsSeeder extends Seeder
                     "longitude" => "1.7833",
                     "pays" => "Benin",
                     "departement" => "Couffo"
-                ],
-                [
-                    "ville" => "Porga",
-                    "latitude" => "11.1170",
-                    "longitude" => "0.9830",
-                    "pays" => "Benin",
-                    "departement" => "Atacora"
-                ],
-                [
-                    "ville" => "Za-Kpota",
-                    "latitude" => "7.23028",
-                    "longitude" => "2.21528",
-                    "pays" => "Benin",
-                    "departement" => "Zou"
-                ],
-                [
-                    "ville" => "Sèmè-Kpodji",
-                    "latitude" => "6.3667",
-                    "longitude" => "2.6167",
-                    "pays" => "Benin",
-                    "departement" => "Ouémé"
-                ],
-                
-                [
-                    "ville" => "Igolo",
-                    "latitude" => "6.3760",
-                    "longitude" => "2.4360",
-                    "pays" => "Benin",
-                    "departement" => "Plateau"
-                ],
-                [
-                    "ville" => "Hillacondji",
-                    "longitude" => "1.3811",
-                    "latitude" => "6.1424",
-                    "pays" => "Benin",
-                    "departement" => "Mono"
                 ]
-
             ];
-        foreach ($arrets as $arret) {
-            Arret::firstOrCreate([
-                "nom" => $arret['ville'],
-                "latitude" => $arret['latitude'],
-                "longitude" => $arret['longitude'],
-                "pays" => $arret['pays'],
-                "departement" => $arret['departement']
-            ]);
-        }
-    }
-}
+
+            $lignes =
+        [
+            [
+                'nom' => 'Cotonou - Bohicon - Dassa-Zoumè - Parakou - Malanville',
+                'compagnie_id' => 1,
+                'distance_km' => 800,
+            ],
+            [
+                'nom' => 'Cotonou - Porto-Novo - Igolo (frontière Nigéria)',
+                'compagnie_id' => 1,
+                'distance_km' => 150,
+            ],
+            [
+                'nom' => 'Comè - Lokossa - Athiémé - Djakotomey',
+                'compagnie_id' => 1,
+                'distance_km' => 200,
+            ],
+            [
+                'nom' => 'Parakou - Kandi - Malanville',
+                'compagnie_id' => 1,
+                'distance_km' => 450,
+            ],
+            [
+                'nom' =>  'Allada - Ouidah - Grand-Popo - Hillacondji (frontière Togo)',
+                'compagnie_id' => 1,
+                'distance_km' => 120,
+            ],
+            [
+                'nom' => 'Cotonou - Sèmè-Kpodji',
+                'compagnie_id' => 1,
+                'distance_km' => 50,
+            ],
+            [
+                'nom' => 'Bohicon - Abomey - Covè - Za-Kpota',
+                'compagnie_id' => 1,
+                'distance_km' => 75,
+            ],
+            [
+                'nom' => 'Abomey-Calavi - Godomey - Cotonou',
+                'compagnie_id' => 1,
+                'distance_km' => 20,
+            ],
+            [
+                'nom' => 'Djougou - Natitingou - Porga',
+                'compagnie_id' => 1,
+                'distance_km' => 300,
+            ],
+            [
+                'nom' => 'Parakou - Tchaourou - Bassila',
+                'compagnie_id' => 1,
+                'distance_km' => 220,
+            ],
+            [
+                'nom' => 'Savalou - Glazoué - Bantè',
+                'compagnie_id' => 1,
+                'distance_km' => 95,
+            ],
+            [
+                'nom' => 'Nikki - Kalalé - Ségbana',
+                'compagnie_id' => 1,
+                'distance_km' => 180,
+            ],
+        ];
+

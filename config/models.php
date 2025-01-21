@@ -245,7 +245,7 @@ return [
         */
 
         'guarded' => [
-            // 'created_by', 'updated_by'
+            'created_by', 'updated_by'
         ],
 
         /*

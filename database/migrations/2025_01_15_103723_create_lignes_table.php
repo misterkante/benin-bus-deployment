@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('lignes', function (Blueprint $table) {
             $table->id();
             $table->string('nom');
-            $table->float('distance_km');
+            $table->float('distance_km')->nullable();
             //clés étrangères
             $table->foreignId('compagnie_id')->nullable()->constrained('users');
             $table->timestamps();
