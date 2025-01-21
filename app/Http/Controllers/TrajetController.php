@@ -32,15 +32,13 @@ class TrajetController extends Controller
     }
 
     // Liste les trajets d'une ligne
-    public function index($ligneId)
+    public function index()
     {
-        $trajets = Trajet::where('ligne_id', $ligneId)
-                         ->with(['depart', 'arrivee'])
-                         ->get();
+        $trajets = Trajet::all();
 
         return response()->json($trajets, 200);
     }
-    
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -90,7 +88,7 @@ class TrajetController extends Controller
         return response()->json(['message' => 'Trajet supprimé'], 200);
     }
 
-        
+
 }
 
 
