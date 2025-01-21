@@ -9,6 +9,7 @@ use App\Http\Controllers\LigneController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\VoyageController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\TrajetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,4 +37,6 @@ Route::apiResource('bus', BusController::class);
 Route::apiResource('profil', ProfilController::class);
 Route::apiResource('ligne', LigneController::class);
 Route::apiResource('arret', ArretController::class);
+Route::apiResource('trajet', TrajetController::class);
+
 require __DIR__ . '/auth.php';

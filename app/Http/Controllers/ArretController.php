@@ -15,14 +15,23 @@ class ArretController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nom' => 'required|string|max:255',
-            'longitude' => 'nullable|numeric',
-            'latitude' => 'nullable|numeric',
-        ]);
 
-        $arret = Arret::create($validated);
-        return response()->json($arret, 201);
+        try {
+            $validated = $request->validate([
+                'nom' => 'required|string|max:255',
+                'longitude' => 'nullable|numeric',
+                'latitude' => 'nullable|numeric',
+            ]);
+
+
+            $arret = Arret::create($validated);
+            return response()->json($arret, 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => "Oups! Une erreur s'est produite lors de la création de l'arret.",
+                'details' => $e,
+            ], 500);
+        }
     }
 
     public function show($id)

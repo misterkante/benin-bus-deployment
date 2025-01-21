@@ -7,8 +7,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
+use App\Events\LigneCreated;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class Ligne
@@ -27,32 +28,40 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Ligne extends Model
 {
-	protected $table = 'lignes';
+    protected $table = 'lignes';
 
-	protected $casts = [
-		'compagnie_id' => 'int'
-	];
+    protected $casts = [
+        'compagnie_id' => 'int'
+    ];
 
-	protected $fillable = [
-		'nom',
+    protected $fillable = [
+        'nom',
         'distance_km',
-		'compagnie_id'
-	];
+        'compagnie_id'
+    ];
 
-	public function user()
-	{
-		return $this->belongsTo(User::class, 'compagnie_id');
-	}
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'compagnie_id');
+    }
 
-	public function arrets()
-	{
-		return $this->belongsToMany(Arret::class, 'arret_lignes')
-					->withPivot('id', 'ordre')
-					->withTimestamps();
-	}
+    public function arrets()
+    {
+        return $this->belongsToMany(Arret::class, 'arret_lignes')
+            ->withPivot('id', 'ordre')
+            ->withTimestamps();
+    }
 
-	public function trajets()
-	{
-		return $this->hasMany(Trajet::class);
-	}
+    public function trajets()
+    {
+        return $this->hasMany(Trajet::class);
+    }
+
+    // fonction pour mettre en place l'evenement de creation de ligne
+    protected static function booted()
+    {
+        static::created(function ($ligne) {
+            event(new LigneCreated($ligne));
+        });
+    }
 }
