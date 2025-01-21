@@ -28,6 +28,7 @@ class AuthenticatedSessionController extends Controller
         return response()->json([
             'msg' => "Connecté avec succès !",
             'user' => $request->user(),
+            'role' => $request->user()->roles,
             'token' => $token->plainTextToken,
         ]);
     }
