@@ -45,14 +45,14 @@ class ProfilController extends Controller
                 'msg' => 'Mot de passe modifié avec succès.'
             ]);
         } catch (ValidationException $error) {
-            if ($error !== null || $error !== []) {
+
                 return response()->json([
                     'error' => $error->errors()
                 ]);
-            };
-            return response()->json([
-                'error' => "Une erreur s'est produite"
-            ]);
+
+            // return response()->json([
+            //     'error' => "Une erreur s'est produite"
+            // ]);
         }
     }
 

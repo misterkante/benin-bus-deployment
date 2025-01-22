@@ -30,10 +30,12 @@ Route::middleware(['auth:sanctum'])->group(
             return $request->user();
         });
 
-        // Mettre à jour le mot de passe de l'utilisateur connecté
-        Route::put('/profil/password', [ProfilController::class, 'changer_mot_de_passe']);
+    //     // Mettre à jour le mot de passe de l'utilisateur connecté
+    //     Route::put('/profil/password', [ProfilController::class, 'changer_mot_de_passe']);
+    //
     }
 );
+Route::middleware('auth:sanctum')->put('/profil/password', [ProfilController::class, 'changer_mot_de_passe']);
 
 Route::get('/test', function (Request $request) {
     return response()->json(User::all());
@@ -42,7 +44,7 @@ Route::get('/test', function (Request $request) {
 // Routes pour les différentrs controllers
 Route::apiResource('voyages', VoyageController::class);
 Route::apiResource('bus', BusController::class);
-Route::apiResource('profil', ProfilController::class);
+//Route::apiResource('profil', ProfilController::class);
 Route::apiResource('ligne', LigneController::class);
 Route::apiResource('arret', ArretController::class);
 Route::apiResource('trajet', TrajetController::class);
