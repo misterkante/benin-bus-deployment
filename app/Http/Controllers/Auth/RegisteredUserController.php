@@ -27,9 +27,11 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
-
+        // Assignation du role à l'utilisateur
         $user->assignRole('client');
+
+        // Evenement pour l'envoi de l'email
+        event(new Registered($user));
 
         return response()->json(['msg' => "Votre compte a été créé avec succès"]);
     }
