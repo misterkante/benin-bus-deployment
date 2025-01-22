@@ -22,10 +22,18 @@ use App\Http\Controllers\TrajetController;
 |
 */
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware(['auth:sanctum'])->group(
+    function () {
 
+        //Récupérer l'utilisateur actuellement connecté
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
+
+        // Mettre à jour le mot de passe de l'utilisateur connecté
+        Route::put('/profil/password', [ProfilController::class, 'changer_mot_de_passe']);
+    }
+);
 
 Route::get('/test', function (Request $request) {
     return response()->json(User::all());
