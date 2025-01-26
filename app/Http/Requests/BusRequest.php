@@ -26,7 +26,6 @@ class BusRequest extends FormRequest
         return [
             'immatriculation' => 'required|string|max:15',
             'places' => 'required|numeric',
-            'compagnie_id' => 'required|exists:users,id',
             'statut' => 'required|in:disponible,maintenance',
         ];
     }

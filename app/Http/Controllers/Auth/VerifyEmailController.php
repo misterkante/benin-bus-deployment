@@ -37,12 +37,12 @@ class VerifyEmailController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if ($user->verification_code !== $request->verification_code) {
-            return response()->json(['error' => 'Code de vérification invalide'], 400);
+        if (!$user || !$user->isVerificationCodeValid($request->code)) {
+            return response()->json(['error' => 'Code de vérification invalide ou expiré'], 400);
         }
 
         $user->email_verified_at = now();
-        $user->verification_code = null; // Supprimez le code une fois vérifié
+        $user->clearVerificationCode(); // Supprimez le code une fois vérifié
         $user->save();
 
         return response()->json(['msg' => 'Email vérifié avec succès.']);

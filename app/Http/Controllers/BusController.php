@@ -30,13 +30,7 @@ class BusController extends Controller
     public function store(BusRequest $request): JsonResponse
     {
         try {
-            // Ajout du champ compagnie_id avec la valeur 1
-            $data = $request->validated();
-            $data['compagnie_id'] = 1;  // Définit compagnie_id à 1
-
-            // Création du bus avec les données modifiées
-            $bus = Bus::create($data);
-
+            $bus = Bu::create($request->validated());
             return response()->json([
                 'msg' => 'Bus créé avec succès.',
                 'bus' => $bus

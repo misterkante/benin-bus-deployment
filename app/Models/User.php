@@ -71,7 +71,8 @@ class User extends Authenticatable  implements MustVerifyEmail
         'password',
         'remember_token',
         'created_by',
-        'verification_code'
+        'verification_code',
+        'verification_code_expires_at'
     ];
 
     public function bus()
@@ -91,7 +92,20 @@ class User extends Authenticatable  implements MustVerifyEmail
 
     public function generateVerificationCode()
     {
-        $this->verification_code = random_int(10000, 99999); // Génère un nombre à 6 chiffres
+        $this->verification_code = random_int(10000, 99999); // Génère un code à 6 chiffres
+        $this->verification_code_expires_at = now()->addMinutes(5); // Définit une expiration à 5 minutes
+        $this->save();
+    }
+
+    public function isVerificationCodeValid($code)
+    {
+        return $this->verification_code === $code && $this->verification_code_expires_at && $this->verification_code_expires_at->isFuture();
+    }
+
+    public function clearVerificationCode()
+    {
+        $this->verification_code = null;
+        $this->verification_code_expires_at = null;
         $this->save();
     }
 }
