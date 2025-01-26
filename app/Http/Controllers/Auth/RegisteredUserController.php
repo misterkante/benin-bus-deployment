@@ -37,7 +37,7 @@ class RegisteredUserController extends Controller
         Mail::to($user->email)->send(new VerificationMail($user));
 
         // Evenement pour l'envoi de l'email
-        // event(new Registered($user));
+        event(new Registered($user));
 
         return response()->json(['msg' => "Votre compte a été créé avec succès"]);
     }
