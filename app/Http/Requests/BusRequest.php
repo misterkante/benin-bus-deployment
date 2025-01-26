@@ -25,7 +25,7 @@ class BusRequest extends FormRequest
     {
         return [
             'immatriculation' => 'required|string|max:15',
-            'places' => 'required|numeric',
+            'places' => 'required',
             'statut' => 'required|in:disponible,maintenance',
         ];
     }
