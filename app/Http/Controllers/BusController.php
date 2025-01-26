@@ -16,7 +16,7 @@ class BusController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $bus = Bu::with(['user:id,nom_compagnie'])->get();
+            $bus = Bu::all();
             return response()->json($bus);
         } catch (\Exception $e) {
             return response()->json([
