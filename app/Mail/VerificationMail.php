@@ -17,39 +17,16 @@ class VerificationMail extends Mailable
 
     /**
      * Create a new message instance.
-     */
-    public function __construct($user)
+     */ public function __construct($user)
     {
         $this->user = $user;
     }
 
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    public function build(): self
     {
-        return new Envelope(
-            subject: 'Verification Mail',
-        );
+        return $this->subject('Verify Your Email')
+            ->view('emails.verification')
+            ->with(['verification_code' => $this->user->verification_code]);
     }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            view: 'emails.verification',
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return ['verification_code' => $this->user->verification_code];
-    }
+    
 }
