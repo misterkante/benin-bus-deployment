@@ -42,7 +42,6 @@ class BusController extends Controller
         }
     }
 
-
     /**
      * Display the specified resource.
      */
