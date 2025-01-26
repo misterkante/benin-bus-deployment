@@ -49,6 +49,7 @@ class BusController extends Controller
             $bus->immatriculation = $request->input('immatriculation');
             $bus->places = $request->input('places');
             $bus->statut = $request->input('statut');
+            $bus->compagnie_id = 1;
             $bus->save(); // Sauvegarde dans la base de données
 
             return response()->json([
