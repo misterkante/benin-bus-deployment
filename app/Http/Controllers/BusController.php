@@ -31,9 +31,9 @@ class BusController extends Controller
     {
         // Validation des données de la requête
         $validator = Validator::make($request->all(), [
-            'immatriculation' => 'required|string|max:15|unique:buses,immatriculation',
-            'places' => 'required|numeric',
-            'statut' => 'required|in:disponible,maintenance',
+            'immatriculation' => 'required',
+            'places' => 'required',
+            'statut' => 'required',
         ]);
 
         // Si la validation échoue, retourner les erreurs
