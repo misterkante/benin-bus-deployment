@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('places');
             $table->enum('statut', ['disponible', 'maintenance'])->default('disponible');
             // clés étrangères
-            $table->foreignId('compagnie_id')->constrained('users');
+            $table->foreignId('compagnie_id')->constrained('users')->default(1);
             $table->timestamps();
         });
     }
