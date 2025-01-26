@@ -27,18 +27,40 @@ class BusController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BusRequest $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
+        // Validation des données de la requête
+        $validator = Validator::make($request->all(), [
+            'immatriculation' => 'required|string|max:15|unique:buses,immatriculation',
+            'places' => 'required|numeric',
+            'statut' => 'required|in:disponible,maintenance',
+        ]);
+
+        // Si la validation échoue, retourner les erreurs
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422); // 422 Unprocessable Entity
+        }
+
+        // Enregistrer les données du bus
         try {
-            $bus = Bu::create($request->validated());
+            $bus = new Bus();
+            $bus->immatriculation = $request->input('immatriculation');
+            $bus->places = $request->input('places');
+            $bus->statut = $request->input('statut');
+            $bus->save(); // Sauvegarde dans la base de données
+
             return response()->json([
-                'msg' => 'Bus créé avec succès.',
-                'bus' => $bus
-            ], 201);
+                'msg' => 'Bus ajouté avec succès.',
+                'bus' => $bus // Vous pouvez retourner les informations du bus si vous le souhaitez
+            ], 201); // 201 Created
         } catch (\Exception $e) {
+            // Si une erreur se produit, retourner un message d'erreur
             return response()->json([
-                'error' => "Oups! Une erreur s'est produite lors de la création du bus."
-            ], 500);
+                'error' => "Oups! Une erreur est survenue lors de l'ajout du bus.",
+                'message' => $e->getMessage()
+            ], 500); // 500 Internal Server Error
         }
     }
 
