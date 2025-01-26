@@ -10,7 +10,7 @@ class TrajetController extends Controller
     public function getTrajetsWithZeroPrice()
     {
         // Récupérer les trajets avec un prix égal à zéro
-        $trajets = Trajet::where('prix', 0)->get();
+        $trajets = Trajet::where('prix', 0.00)->get();
 
         // Retourner la réponse sous forme de JSON
         return response()->json($trajets);
