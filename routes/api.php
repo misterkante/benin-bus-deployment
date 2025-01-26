@@ -49,4 +49,8 @@ Route::apiResource('ligne', LigneController::class);
 Route::apiResource('arret', controller: ArretController::class);
 Route::apiResource('trajet', TrajetController::class);
 
+// Route ajoutée par Obed pour enregistrer automatiquement les villes dans contenues dans la chaîne de caractère passée en paramêtre.
+Route::post('/ligneAndTrajets', [LigneController::class, 'createLigne']);
+Route::post('/ligneAndTrajets', [LigneController::class, 'createLigne']);
+
 require __DIR__ . '/auth.php';

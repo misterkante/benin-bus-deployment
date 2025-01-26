@@ -7,6 +7,16 @@ use Illuminate\Http\Request;
 
 class TrajetController extends Controller
 {
+    public function getTrajetsWithZeroPrice()
+    {
+        // Récupérer les trajets avec un prix égal à zéro
+        $trajets = Trajet::where('prix', 0)->get();
+
+        // Retourner la réponse sous forme de JSON
+        return response()->json($trajets);
+    }
+
+    
     // Générer tous les trajets possibles pour une ligne
     public function generateTrajets($ligneId)
     {
