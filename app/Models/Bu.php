@@ -34,7 +34,8 @@ class Bu extends Model
 	protected $table = 'bus';
 
 	protected $casts = [
-		'compagnie_id' => 'int'
+		'compagnie_id' => 'int',
+		'places' => 'string',
 	];
 
 	protected $fillable = [

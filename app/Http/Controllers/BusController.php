@@ -6,6 +6,7 @@ use App\Models\Bu;
 use Illuminate\Http\Request;
 use App\Http\Requests\BusRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
 
 class BusController extends Controller
 {
@@ -45,7 +46,7 @@ class BusController extends Controller
 
         // Enregistrer les données du bus
         try {
-            $bus = new Bus();
+            $bus = new Bu();
             $bus->immatriculation = $request->input('immatriculation');
             $bus->places = $request->input('places');
             $bus->statut = $request->input('statut');
