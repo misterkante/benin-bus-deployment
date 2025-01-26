@@ -91,7 +91,7 @@ class User extends Authenticatable  implements MustVerifyEmail
 
     public function generateVerificationCode()
     {
-        $this->verification_code = Str::random(6); // Code alphanumérique de 6 caractères
+        $this->verification_code = random_int(10000, 99999); // Génère un nombre à 6 chiffres
         $this->save();
     }
 }
