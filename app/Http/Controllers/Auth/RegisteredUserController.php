@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Exception;
 use App\Models\User;
 use App\Mail\VerificationMail;
 use Illuminate\Http\JsonResponse;
@@ -34,10 +35,15 @@ class RegisteredUserController extends Controller
 
         $user->generateVerificationCode();
 
-        Mail::to($user->email)->send(new VerificationMail($user));
+        try {
+            Mail::to($user->email)->send(new VerificationMail($user));
+        } catch (Exception $e) {
+            return response()->json(["error" => $e]);
+        }
+
 
         // Evenement pour l'envoi de l'email
-        event(new Registered($user));
+        //event(new Registered($user));
 
         return response()->json(['msg' => "Votre compte a été créé avec succès"]);
     }
