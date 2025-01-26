@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Mail\VerificationMail;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\Auth\RegisterRequest;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Auth\Events\Registered;
+use App\Http\Requests\Auth\RegisterRequest;
 
 class RegisteredUserController extends Controller
 {
@@ -22,7 +24,7 @@ class RegisteredUserController extends Controller
 
         $user = User::create([
             'nom' => $request->nom,
-            'prenom' =>$request->prenom,
+            'prenom' => $request->prenom,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -30,8 +32,12 @@ class RegisteredUserController extends Controller
         // Assignation du role à l'utilisateur
         $user->assignRole('client');
 
+        $user->generateVerificationCode();
+
+        Mail::to($user->email)->send(new VerificationMail($user));
+
         // Evenement pour l'envoi de l'email
-        event(new Registered($user));
+        // event(new Registered($user));
 
         return response()->json(['msg' => "Votre compte a été créé avec succès"]);
     }

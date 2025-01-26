@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
@@ -46,44 +47,51 @@ class User extends Authenticatable  implements MustVerifyEmail
     use HasFactory, HasApiTokens, Notifiable;
     use HasRoles;
 
-	protected $table = 'users';
+    protected $table = 'users';
 
-	protected $casts = [
-		'email_verified_at' => 'datetime'
-	];
+    protected $casts = [
+        'email_verified_at' => 'datetime'
+    ];
 
-	protected $hidden = [
-		'password',
-		'remember_token'
-	];
+    protected $hidden = [
+        'password',
+        'remember_token'
+    ];
 
-	protected $fillable = [
-		'nom',
-		'prenom',
-		'nom_compagnie',
-		'telephone',
-		'image',
-		'longitude',
-		'latitude',
-		'email',
-		'email_verified_at',
-		'password',
-		'remember_token',
-		'created_by'
-	];
+    protected $fillable = [
+        'nom',
+        'prenom',
+        'nom_compagnie',
+        'telephone',
+        'image',
+        'longitude',
+        'latitude',
+        'email',
+        'email_verified_at',
+        'password',
+        'remember_token',
+        'created_by',
+        'verification_code'
+    ];
 
-	public function bus()
-	{
-		return $this->hasMany(Bu::class, 'compagnie_id');
-	}
+    public function bus()
+    {
+        return $this->hasMany(Bu::class, 'compagnie_id');
+    }
 
-	public function lignes()
-	{
-		return $this->hasMany(Ligne::class, 'compagnie_id');
-	}
+    public function lignes()
+    {
+        return $this->hasMany(Ligne::class, 'compagnie_id');
+    }
 
-	public function tickets()
-	{
-		return $this->hasMany(Ticket::class);
-	}
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function generateVerificationCode()
+    {
+        $this->verification_code = Str::random(6); // Code alphanumérique de 6 caractères
+        $this->save();
+    }
 }

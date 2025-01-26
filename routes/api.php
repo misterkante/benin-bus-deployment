@@ -46,7 +46,7 @@ Route::apiResource('voyages', VoyageController::class);
 Route::apiResource('bus', BusController::class);
 //Route::apiResource('profil', ProfilController::class);
 Route::apiResource('ligne', LigneController::class);
-Route::apiResource('arret', ArretController::class);
+Route::apiResource('arret', controller: ArretController::class);
 Route::apiResource('trajet', TrajetController::class);
 
 require __DIR__ . '/auth.php';
