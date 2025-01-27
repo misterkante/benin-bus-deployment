@@ -51,10 +51,27 @@ class Trajet extends Model
 		'ligne_id'
 	];
 
-	public function arret()
+	// public function arret()
+	// {
+	// 	return $this->belongsTo(Arret::class, 'depart_id');
+	// }
+
+
+	// Relation avec l'arrêt de départ
+	public function arrivee()
 	{
 		return $this->belongsTo(Arret::class, 'depart_id');
 	}
+
+
+
+	// Relation avec l'arrêt d'arrivée
+	public function arrivee()
+	{
+		return $this->belongsTo(Arret::class, 'arrivee_id');
+	}
+
+
 
 	public function ligne()
 	{
