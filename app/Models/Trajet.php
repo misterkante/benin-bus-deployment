@@ -58,7 +58,7 @@ class Trajet extends Model
 
 
 	// Relation avec l'arrêt de départ
-	public function arrivee()
+	public function depart()
 	{
 		return $this->belongsTo(Arret::class, 'depart_id');
 	}
