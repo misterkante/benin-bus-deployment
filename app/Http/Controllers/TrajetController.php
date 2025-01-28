@@ -10,8 +10,7 @@ class TrajetController extends Controller
     public function getTrajetsWithZeroPrice()
     {
         // Récupérer les trajets avec un prix égal à zéro et inclure les arrêts de départ et d'arrivée
-        $trajets = Trajet::where('prix', 0.00)
-            ->with(['depart' => function($query) {
+        $trajets = Trajet::with(['depart' => function($query) {
                 $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt de départ
             }, 'arrivee' => function($query) {
                 $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt d'arrivée
