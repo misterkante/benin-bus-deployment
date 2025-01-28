@@ -23,6 +23,47 @@ class TrajetController extends Controller
     }
 
 
+    // fonction pour enregistrer une liste de prix pour chacun des trajets
+    public function updatePrix(Request $request)
+    {
+        // Valider les données envoyées
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:trajets,id',  // Vérifier que l'ID est valide et existe
+            'prix' => 'required|array',
+            'prix.*' => 'numeric',  // Vérifier que le prix est numérique
+            'prix' => 'size:'.count($request->input('ids')),  // Assurer que les prix et les IDs ont le même nombre d'éléments
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors(),
+            ], 422);
+        }
+
+        // Extraire les données de la requête
+        $ids = $request->input('ids');
+        $prix = $request->input('prix');
+
+        // Mettre à jour les trajets
+        foreach ($ids as $index => $id) {
+            // Trouver chaque trajet par son ID
+            $trajet = Trajet::find($id);
+            
+            if ($trajet) {
+                // Mettre à jour le prix du trajet
+                $trajet->prix = $prix[$index];
+                $trajet->save();  // Sauvegarder les changements
+            }
+        }
+
+        // Retourner une réponse indiquant que la mise à jour a réussi
+        return response()->json([
+            'message' => 'Trajets mis à jour avec succès.',
+        ], 200);
+    }
+
+
     
     // Générer tous les trajets possibles pour une ligne
     public function generateTrajets($ligneId)

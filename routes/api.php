@@ -53,4 +53,7 @@ Route::apiResource('trajet', TrajetController::class);
 Route::post('/ligneAndTrajets', [LigneController::class, 'createLigne']);
 Route::get('/trajets-zero-prix', [TrajetController::class, 'getTrajetsWithZeroPrice']);
 
+//Route pour faire la mise à jour des prix d'une  longue liste de trajets.
+Route::post('/soumettre-trajets', [TrajetController::class, 'updatePrix']);
+
 require __DIR__ . '/auth.php';
