@@ -28,10 +28,9 @@ class TrajetController extends Controller
         // Valider les données envoyées
         $validator = Validator::make($request->all(), [
             'ids' => 'required|array',
-            'ids.*' => 'integer|exists:trajets,id',  // Vérifier que l'ID est valide et existe
+            
             'prix' => 'required|array',
-            'prix.*' => 'numeric',  // Vérifier que le prix est numérique
-            'prix' => 'size:'.count($request->input('ids')),  // Assurer que les prix et les IDs ont le même nombre d'éléments
+
         ]);
 
         if ($validator->fails()) {
