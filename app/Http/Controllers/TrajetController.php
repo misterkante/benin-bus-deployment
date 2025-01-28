@@ -28,9 +28,7 @@ class TrajetController extends Controller
         // Valider les données envoyées
         $validator = Validator::make($request->all(), [
             'ids' => 'required|array',
-            
             'prix' => 'required|array',
-
         ]);
 
         if ($validator->fails()) {
