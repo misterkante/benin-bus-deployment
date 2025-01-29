@@ -97,6 +97,11 @@ class LigneController extends Controller
     return response()->json($lignes, 200);
 }
 
+    public function allLignes(){
+        $lignes = Ligne::all();
+        return response()->json($lignes, 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
