@@ -30,6 +30,7 @@ class VerifyEmailController extends Controller
     // }
 
     public function store(Request $request) {
+
         $request->validate([
             'email' => 'required|email|exists:users,email',
             'verification_code' => 'required|string',

@@ -49,7 +49,7 @@ class TrajetController extends Controller
             foreach ($ids as $index => $id) {
                 // Trouver chaque trajet par son ID
                 $trajet = Trajet::find($id);
-                
+
                 if ($trajet) {
                     // Mettre à jour le prix du trajet
                     $trajet->prix = $prix[$index];
@@ -60,7 +60,7 @@ class TrajetController extends Controller
             return response()->json([
                 'message' => 'Trajets mis à jour avec succès.',
             ], 200);
-            
+
         } catch (\Exception $e) {
             // Loggez l'erreur pour l'examen
             \Log::error('Erreur lors de la mise à jour des trajets: ' . $e->getMessage());
@@ -72,7 +72,7 @@ class TrajetController extends Controller
 
 
 
-    
+
     // Générer tous les trajets possibles pour une ligne
     public function generateTrajets($ligneId)
     {
@@ -101,6 +101,7 @@ class TrajetController extends Controller
     public function index()
     {
         $trajets = Trajet::all();
+
 
         return response()->json($trajets, 200);
     }

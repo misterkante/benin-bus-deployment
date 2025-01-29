@@ -92,12 +92,12 @@ class User extends Authenticatable  implements MustVerifyEmail
 
     public function generateVerificationCode()
     {
-        $this->verification_code = random_int(10000, 99999); // Génère un code à 6 chiffres
-        $this->verification_code_expires_at = now()->addMinutes(5); // Définit une expiration à 5 minutes
+        $this->verification_code = strval(random_int(10000, 99999)); // Génère un code à 5 chiffres
+        $this->verification_code_expires_at = now()->addMinutes(30); // Définit une expiration à 30 minutes
         $this->save();
     }
 
-    public function isVerificationCodeValid($code)
+    public function isVerificationrCodeValid($code)
     {
         return $this->verification_code === $code && $this->verification_code_expires_at && $this->verification_code_expires_at->isFuture();
     }
