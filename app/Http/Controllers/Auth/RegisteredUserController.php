@@ -35,6 +35,7 @@ class RegisteredUserController extends Controller
 
         $user->generateVerificationCode();
 
+        // Envoi d'email
         try {
             Mail::to($user->email)->send(new VerificationMail($user));
         } catch (Exception $e) {
