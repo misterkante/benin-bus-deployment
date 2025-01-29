@@ -56,4 +56,7 @@ Route::get('/trajets-zero-prix', [TrajetController::class, 'getTrajetsWithZeroPr
 //Route pour faire la mise à jour des prix d'une  longue liste de trajets.
 Route::post('/soumettre-trajets', [TrajetController::class, 'updatePrix']);
 
+//Route pour récupérer la liste des trajets sans les arrêts associés.
+Route::get('/getAllLines', LigneController::class, 'allLignes'); 
+
 require __DIR__ . '/auth.php';
