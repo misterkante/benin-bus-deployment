@@ -96,8 +96,26 @@ class TrajetController extends Controller
 
         return response()->json(['message' => 'Trajets générés avec succès'], 201);
     }
+    // app/Http/Controllers/TrajetController.php
 
-    // Liste les trajets d'une ligne
+    public function getTrajetsForLigne(Request $request)
+    {
+        $ligneId = $request->query('ligne_id');  // Récupérer l'ID de la ligne depuis la requête
+
+        // Assurez-vous que l'ID de la ligne est valide
+        if (!$ligneId) {
+            return response()->json(['error' => 'Ligne ID est requis'], 400);
+        }
+
+        // Récupérer les trajets associés à la ligne
+        $trajets = Trajet::where('ligne_id', $ligneId)->get();
+
+        // Retourner les trajets sous forme de JSON
+        return response()->json($trajets);
+    }
+
+
+    // Liste les trajets 
     public function index()
     {
         $trajets = Trajet::all();
@@ -154,6 +172,9 @@ class TrajetController extends Controller
         $trajet->delete();
         return response()->json(['message' => 'Trajet supprimé'], 200);
     }
+
+
+    
 
 
 }
