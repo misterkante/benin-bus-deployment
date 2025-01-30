@@ -9,68 +9,12 @@ class TrajetController extends Controller
 {
     public function getTrajetsWithZeroPrice()
     {
-        // Récupérer les trajets avec un prix égal à zéro et inclure les arrêts de départ et d'arrivée
-        $trajets = Trajet::with(['depart' => function($query) {
-                $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt de départ
-            }, 'arrivee' => function($query) {
-                $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt d'arrivée
-            }])
-            ->get();
+        // Récupérer les trajets avec un prix égal à zéro
+        $trajets = Trajet::where('prix', 0)->get();
 
-        // Retourner la réponse sous forme de JSON avec les informations des arrêts de départ et d'arrivée
+        // Retourner la réponse sous forme de JSON
         return response()->json($trajets);
     }
-
-
-    // fonction pour enregistrer une liste de prix pour chacun des trajets
-    public function updatePrix(Request $request)
-    {
-        // Valider les données envoyées
-        $validator = Validator::make($request->all(), [
-            'ids' => 'required|array',
-            'ids.*' => 'integer|exists:trajets,id',  // Assurez-vous que les IDs existent dans la base de données
-            'prix' => 'required|array',
-            'prix.*' => 'numeric',  // Assurez-vous que les prix sont numériques
-            'prix' => 'size:'.count($request->input('ids')),  // Assurez-vous que les tailles des tableaux sont identiques
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => $validator->errors(),
-            ], 422);
-        }
-
-        // Extraire les données de la requête
-        $ids = $request->input('ids');
-        $prix = $request->input('prix');
-
-        try {
-            // Mettre à jour les trajets
-            foreach ($ids as $index => $id) {
-                // Trouver chaque trajet par son ID
-                $trajet = Trajet::find($id);
-
-                if ($trajet) {
-                    // Mettre à jour le prix du trajet
-                    $trajet->prix = $prix[$index];
-                    $trajet->save();  // Sauvegarder les changements
-                }
-            }
-
-            return response()->json([
-                'message' => 'Trajets mis à jour avec succès.',
-            ], 200);
-
-        } catch (\Exception $e) {
-            // Loggez l'erreur pour l'examen
-            \Log::error('Erreur lors de la mise à jour des trajets: ' . $e->getMessage());
-            return response()->json([
-                'error' => 'Erreur serveur lors de la mise à jour des trajets.',
-            ], 500);
-        }
-    }
-
-
 
 
     // Générer tous les trajets possibles pour une ligne
