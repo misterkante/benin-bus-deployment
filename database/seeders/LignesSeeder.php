@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Arret;
+use App\Models\Trajet;
+use App\Models\ArretLigne;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -89,23 +92,53 @@ class LignesSeeder extends Seeder
                 'compagnie_id' => $ligne['compagnie_id'],
                 'distance_km' => $ligne['distance_km'],
             ]);
-
             // Récupérer les villes de la ligne
-            $nomsVilles = explode(' - ', $ligne['nom']);
+            $villes = explode(' - ', $ligne['nom']);
 
-            // Associer les arrets correspondant aux noms de ville
-            foreach ($nomsVilles as $ordre => $ville) {
-                if (isset($arretsAvecId[$ville])) {
-                    DB::table('arret_lignes')->insert([
-                        'ligne_id' => $ligneId,
-                        'arret_id' => $arretsAvecId[$ville],
-                        'ordre' => $ordre + 1, // L'ordre commence à 1
-                    ]);
-                } else {
-                    // si aucune ville ne correspond
-                    echo "Ville non trouvée : $ville\n";
+            // Récupérer les IDs des arrêts (villes)
+            $arrets = Arret::whereIn('nom', $villes)->get();
+
+            // Enregistrer les arrêts dans la table ArretLigne avec l'ordre
+            foreach ($arrets as $index => $arret) {
+                ArretLigne::create([
+                    'ligne_id' => $ligneId,
+                    'arret_id' => $arret->id,
+                    'ordre' => $index + 1,  // L'ordre commence à 1
+                ]);
+            }
+
+            // Enregistrer les trajets pour toutes les combinaisons de villes
+            foreach ($arrets as $depart) {
+                foreach ($arrets as $arrivee) {
+                    if ($depart->id !== $arrivee->id) {  // On ne crée pas de trajet pour une ville avec elle-même
+                        // Créer un trajet entre depart et arrivee
+                        Trajet::create([
+                            'ligne_id' => $ligneId,
+                            'depart_id' => $depart->id,
+                            'arrivee_id' => $arrivee->id,
+                            'duree' => 0,  // À définir selon ta logique
+                            'prix' => 0,   // À définir selon ta logique
+                        ]);
+                    }
                 }
             }
+
+            // // Récupérer les villes de la ligne
+            // $nomsVilles = explode(' - ', $ligne['nom']);
+
+            // // Associer les arrets correspondant aux noms de ville
+            // foreach ($nomsVilles as $ordre => $ville) {
+            //     if (isset($arretsAvecId[$ville])) {
+            //         DB::table('arret_lignes')->insert([
+            //             'ligne_id' => $ligneId,
+            //             'arret_id' => $arretsAvecId[$ville],
+            //             'ordre' => $ordre + 1, // L'ordre commence à 1
+            //         ]);
+            //     } else {
+            //         // si aucune ville ne correspond
+            //         echo "Ville non trouvée : $ville\n";
+            //     }
+            // }
         }
 
 
