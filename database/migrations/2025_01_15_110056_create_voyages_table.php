@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('date_voyage');
             $table->time('heure_depart');
             //clés étrangères
-            $table->foreignId('trajet_id')->constrained();
+            $table->foreignId('ligne_id')->constrained();
             $table->timestamps();
         });
     }

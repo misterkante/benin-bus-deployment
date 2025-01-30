@@ -37,18 +37,18 @@ class Voyage extends Model
 	protected $casts = [
 		'date_voyage' => 'datetime',
 		'heure_depart' => 'datetime',
-		'trajet_id' => 'int'
+		'ligne_id' => 'int'
 	];
 
 	protected $fillable = [
 		'date_voyage',
 		'heure_depart',
-		'trajet_id'
+		'ligne_id'
 	];
 
-	public function trajet()
+	public function ligne()
 	{
-		return $this->belongsTo(Trajet::class);
+		return $this->belongsTo(Ligne::class);
 	}
 
 	public function bus()
