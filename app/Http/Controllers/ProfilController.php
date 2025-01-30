@@ -15,7 +15,7 @@ class ProfilController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function changer_mot_de_passe(Request $request)
+    public function update_password(Request $request)
     {
         try {
             // Valider les champs
