@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('bu_voyages', function (Blueprint $table) {
             $table->id();
-            $table->integer('places_disponibles');
             //clés étrangères
             $table->foreignId('bus_id')->constrained('bus');
             $table->foreignId('voyage_id')->constrained();
