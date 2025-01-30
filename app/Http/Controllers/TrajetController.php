@@ -108,7 +108,12 @@ class TrajetController extends Controller
         }
 
         // Récupérer les trajets associés à la ligne
-        $trajets = Trajet::where('ligne_id', $ligneId)->get();
+        $trajets = Trajet::where('ligne_id',$ligneId)-> with(['depart' => function($query) {
+            $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt de départ
+        }, 'arrivee' => function($query) {
+            $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt d'arrivée
+        }])
+        ->get();
 
         // Retourner les trajets sous forme de JSON
         return response()->json($trajets);
