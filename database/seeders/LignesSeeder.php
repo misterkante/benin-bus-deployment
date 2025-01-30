@@ -116,48 +116,12 @@ class LignesSeeder extends Seeder
                             'ligne_id' => $ligneId,
                             'depart_id' => $depart->id,
                             'arrivee_id' => $arrivee->id,
-                            'duree' => 0,  // À définir selon ta logique
-                            'prix' => 0,   // À définir selon ta logique
+                            'duree' => random_int(1,5),  // À définir selon ta logique
+                            'prix' => random_int(2000, 15000),   // À définir selon ta logique
                         ]);
                     }
                 }
             }
-
-            // // Récupérer les villes de la ligne
-            // $nomsVilles = explode(' - ', $ligne['nom']);
-
-            // // Associer les arrets correspondant aux noms de ville
-            // foreach ($nomsVilles as $ordre => $ville) {
-            //     if (isset($arretsAvecId[$ville])) {
-            //         DB::table('arret_lignes')->insert([
-            //             'ligne_id' => $ligneId,
-            //             'arret_id' => $arretsAvecId[$ville],
-            //             'ordre' => $ordre + 1, // L'ordre commence à 1
-            //         ]);
-            //     } else {
-            //         // si aucune ville ne correspond
-            //         echo "Ville non trouvée : $ville\n";
-            //     }
-            // }
         }
-
-
-
-        // Insertion des arrets contenus dans chaque ligne afin de generer les trajets possibles
-        // foreach ($lignes as $key => $value) {
-
-        //     foreach ($variable as $key => $value) {
-        //         # code...
-        //     }
-        //     switch ($key) {
-        //         case 1:
-        //             # code...
-        //             break;
-
-        //         default:
-        //             # code...
-        //             break;
-        //     }
-        // }
     }
 }
