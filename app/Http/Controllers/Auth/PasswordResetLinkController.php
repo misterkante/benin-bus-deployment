@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\JsonResponse;
+use Exception;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Mail\VerificationMail;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PasswordResetLinkController extends Controller
 {
@@ -18,23 +21,26 @@ class PasswordResetLinkController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
+        // Validation des données de la requête
         $request->validate([
-            'email' => ['required', 'email'],
+            "email" => ['required','email', 'exists:users,email'],
         ]);
 
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
 
-        if ($status != Password::RESET_LINK_SENT) {
-            throw new HttpResponseException(response()->json([
-                'error' => [__($status)],
-            ]));
+        //Récupérer l'utilisateur et regenerer le code
+        $user = User::where('email', $request->input('email'))->first();
+        $user->generateVerificationCode();
+
+        // Envoi d'email
+        try {
+            Mail::to($user->email)->send(new VerificationMail($user));
         }
+        catch (Exception $e) {
+            return response()->json([
+                "error" => "Le mail de vérification n'a pas pu être envoyé.",
+            ]);
+        }
+        return response()->json(['msg' => 'Un mail de vérification vous a été envoyé. Veuillez consulter vos mails.']);
 
-        return response()->json(['msg' => __($status)]);
     }
 }

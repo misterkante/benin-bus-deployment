@@ -50,7 +50,8 @@ class User extends Authenticatable  implements MustVerifyEmail
     protected $table = 'users';
 
     protected $casts = [
-        'email_verified_at' => 'datetime'
+        'email_verified_at' => 'datetime',
+        'verification_code_expires_at' => 'datetime',
     ];
 
     protected $hidden = [
@@ -97,9 +98,12 @@ class User extends Authenticatable  implements MustVerifyEmail
         $this->save();
     }
 
-    public function isVerificationrCodeValid($code)
+    public function isVerificationCodeValid($code)
     {
-        return $this->verification_code === $code && $this->verification_code_expires_at && $this->verification_code_expires_at->isFuture();
+        return
+           $this->verification_code === $code
+        && $this->verification_code_expires_at
+        && $this->verification_code_expires_at->isFuture();
     }
 
     public function clearVerificationCode()

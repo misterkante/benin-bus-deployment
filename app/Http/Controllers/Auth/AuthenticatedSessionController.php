@@ -52,7 +52,6 @@ class AuthenticatedSessionController extends Controller
 
         return response()->json([
             'msg' => 'Déconnecté avec succès !',
-            'user' => $user
         ]);
     }
 }

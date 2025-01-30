@@ -32,15 +32,16 @@ require __DIR__ . '/auth.php';
 Route::middleware(['auth:sanctum'])->group(function () {
 
     /**
-     * Gestion du profil de l'utilisateur connecté
+     * Gestion de l'utilisateur connecté
      */
     //-> récupérer l'utilisateur connecté
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    
+
     //-> changer le mot de passe
     Route::put('/profil/password', [ProfilController::class, 'update_password']);
+
 });
 
 
