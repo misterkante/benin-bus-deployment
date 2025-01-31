@@ -63,7 +63,6 @@ class VoyageController extends Controller
                 BuVoyage::create([
                     'bus_id' => $busId,
                     'voyage_id' => $voyage->id,
-                    'places_disponibles' => 50, // Nombre de places disponibles par défaut, ou tu peux l'ajouter à la requête
                 ]);
             }
 
@@ -109,6 +108,8 @@ class VoyageController extends Controller
                 'error' => 'Une erreur est survenue lors de la création du voyage.',
                 'message' => $e->getMessage(),
             ], 500);
+            print(e);
+
         }
     }
 
