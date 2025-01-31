@@ -7,6 +7,11 @@ use App\Models\Trajet;
 use App\Models\Voyage;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Models\BuVoyage;
+use App\Models\Escale;
+use App\Models\Bus;
+use App\Models\Ligne;
+use Illuminate\Support\Facades\DB;
 
 class VoyageController extends Controller
 {
@@ -49,7 +54,7 @@ class VoyageController extends Controller
             // 1. Créer le voyage
             $voyage = Voyage::create([
                 'date_voyage' => $request->date_voyage,
-                'heure_depart' => null, // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
+                'heure_depart' => $request->heures[0]['heure_depart'], // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
                 'ligne_id' => $request->ligne_id, // Associer la ligne au voyage
             ]);
 
