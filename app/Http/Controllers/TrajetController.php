@@ -117,6 +117,69 @@ class TrajetController extends Controller
         return response()->json($trajet, 200);
     }
 
+    public function updatePrix(Request $request)
+    {
+        // Valider les données envoyées
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required|array',
+            'ids.*' => 'integer|exists:trajets,id',  // Assurez-vous que les IDs existent dans la base de données
+            'prix' => 'required|array',
+            'prix.*' => 'numeric',  // Assurez-vous que les prix sont numériques
+            'prix' => 'size:'.count($request->input('ids')),  // Assurez-vous que les tailles des tableaux sont identiques
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors(),
+            ], 422);
+        }
+
+        // Extraire les données de la requête
+        $ids = $request->input('ids');
+        $prix = $request->input('prix');
+
+        // Mettre à jour les trajets
+        foreach ($ids as $index => $id) {
+            // Trouver chaque trajet par son ID
+            $trajet = Trajet::find($id);
+            
+            if ($trajet) {
+                // Mettre à jour le prix du trajet
+                $trajet->prix = $prix[$index];
+                $trajet->save();  // Sauvegarder les changements
+        try {
+            // Mettre à jour les trajets
+            foreach ($ids as $index => $id) {
+                // Trouver chaque trajet par son ID
+                $trajet = Trajet::find($id);
+                
+                if ($trajet) {
+                    // Mettre à jour le prix du trajet
+                    $trajet->prix = $prix[$index];
+                    $trajet->save();  // Sauvegarder les changements
+                }
+            }
+        }
+
+        // Retourner une réponse indiquant que la mise à jour a réussi
+        return response()->json([
+            'message' => 'Trajets mis à jour avec succès.',
+        ], 200);
+            return response()->json([
+                'message' => 'Trajets mis à jour avec succès.',
+            ], 200);
+            
+        } catch (\Exception $e) {
+            // Loggez l'erreur pour l'examen
+            \Log::error('Erreur lors de la mise à jour des trajets: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Erreur serveur lors de la mise à jour des trajets.',
+            ], 500);
+        }
+    }
+
+
+
     public function destroy($id)
     {
         $trajet = Trajet::find($id);
