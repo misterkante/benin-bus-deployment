@@ -54,7 +54,7 @@ class VoyageController extends Controller
             // 1. Créer le voyage
             $voyage = Voyage::create([
                 'date_voyage' => $request->date_voyage,
-                'heure_depart' => 10:00, // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
+                'heure_depart' => "10:00", // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
                 'ligne_id' => $request->ligne_id, // Associer la ligne au voyage
 
             ]);
