@@ -36,7 +36,7 @@ class VoyageController extends Controller
     public function store(Request $request)
     {
         // Validation des données entrantes
-        // $request->validate([
+        $request->validate([
         //     'buses' => 'required|array',
         //     'buses.*' => 'exists:bus,id', // Vérifie que les bus existent dans la table 'bus'
         //     'ligne_id' => 'required|exists:liges,id',
@@ -45,7 +45,42 @@ class VoyageController extends Controller
         //     'heures.*.heure_depart' => 'required|date_format:H:i',
         //     'heures.*.heure_arrivee' => 'required|date_format:H:i',
         //     'date_voyage' => 'required|date_format:Y-m-d',
-        // ]);
+        ]);
+
+        // Démarrer une transaction DB
+       // DB::beginTransaction();
+
+        // try {
+
+        //     // 1. Créer le voyage
+        //     $voyage = Voyage::create([
+        //         'date_voyage' => $request->date_voyage,
+        //         'heure_depart' => $request->heures[0]["heure_depart"], // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
+        //         'ligne_id' => $request->ligne_id, // Associer la ligne au voyage
+
+        //     ]);
+
+
+
+        //     // 4. Commit de la transaction si tout va bien
+        //     DB::commit();
+
+        //     return response()->json([
+        //         'message' => 'Voyage créé avec succès!',
+        //         'data' => $voyage,
+        //     ], 201);
+
+        // } catch (\Exception $e) {
+        //     // Annuler la transaction en cas d'erreur
+        //     DB::rollBack();
+        //     return response()->json([
+        //         'error' => 'Une erreur est survenue lors de la création du voyage.',
+        //         'message' => $e->getMessage(),
+        //     ], 500);
+        //    // print(e);
+
+        // }
+
 
         // Démarrer une transaction DB
         DB::beginTransaction();
@@ -54,12 +89,44 @@ class VoyageController extends Controller
             // 1. Créer le voyage
             $voyage = Voyage::create([
                 'date_voyage' => $request->date_voyage,
-                'heure_depart' => "10:00", // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
+                'heure_depart' => $request->heures[0]["heure_depart"], // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
                 'ligne_id' => $request->ligne_id, // Associer la ligne au voyage
-
             ]);
 
+            // 2. Insérer les bus pour ce voyage
+            foreach ($request->buses as $busId) {
+                BuVoyage::create([
+                    'bus_id' => $busId,
+                    'voyage_id' => $voyage->id,
+                ]);
+            }
 
+            // 3. Insérer les trajets et escales avec les heures de départ et d'arrivée
+            foreach ($request->heures as $heure) {
+                $trajet = Trajet::find($heure['trajet_id']);
+
+                // On récupère l'arrêt de départ et d'arrivée pour l'escale
+                $departId = $trajet->depart_id;
+                $arriveeId = $trajet->arrivee_id;
+
+                // Création de l'escale
+                Escale::create([
+                    'voyage_id' => $voyage->id,
+                    'arret_id' => $departId, // Arrêt de départ
+                    'heure_depart' => $heure['heure_depart'],
+                    'heure_arrivee' => $heure['heure_arrivee'],
+                    'places_disponibles' => 30, // Par exemple, définir des places par défaut ou gérer dynamiquement
+                ]);
+
+                // Création d'une escale pour l'arrêt d'arrivée, si nécessaire
+                Escale::create([
+                    'voyage_id' => $voyage->id,
+                    'arret_id' => $arriveeId, // Arrêt d'arrivée
+                    'heure_depart' => $heure['heure_depart'], // Ou une autre logique si tu veux utiliser des heures différentes
+                    'heure_arrivee' => $heure['heure_arrivee'],
+                    'places_disponibles' => 30,
+                ]);
+            }
 
             // 4. Commit de la transaction si tout va bien
             DB::commit();
@@ -79,72 +146,6 @@ class VoyageController extends Controller
             print(e);
 
         }
-
-
-        // Démarrer une transaction DB
-        // DB::beginTransaction();
-
-        // try {
-        //     // 1. Créer le voyage
-        //     $voyage = Voyage::create([
-        //         'date_voyage' => $request->date_voyage,
-        //         'heure_depart' => $request->heures[0]['heure_depart'], // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
-        //         'ligne_id' => $request->ligne_id, // Associer la ligne au voyage
-        //     ]);
-
-        //     // 2. Insérer les bus pour ce voyage
-        //     foreach ($request->buses as $busId) {
-        //         BuVoyage::create([
-        //             'bus_id' => $busId,
-        //             'voyage_id' => $voyage->id,
-        //         ]);
-        //     }
-
-        //     // 3. Insérer les trajets et escales avec les heures de départ et d'arrivée
-        //     foreach ($request->heures as $heure) {
-        //         $trajet = Trajet::find($heure['trajet_id']);
-                
-        //         // On récupère l'arrêt de départ et d'arrivée pour l'escale
-        //         $departId = $trajet->depart_id;
-        //         $arriveeId = $trajet->arrivee_id;
-
-        //         // Création de l'escale
-        //         Escale::create([
-        //             'voyage_id' => $voyage->id,
-        //             'arret_id' => $departId, // Arrêt de départ
-        //             'heure_depart' => $heure['heure_depart'],
-        //             'heure_arrivee' => $heure['heure_arrivee'],
-        //             'places_disponibles' => 30, // Par exemple, définir des places par défaut ou gérer dynamiquement
-        //         ]);
-
-        //         // Création d'une escale pour l'arrêt d'arrivée, si nécessaire
-        //         Escale::create([
-        //             'voyage_id' => $voyage->id,
-        //             'arret_id' => $arriveeId, // Arrêt d'arrivée
-        //             'heure_depart' => $heure['heure_depart'], // Ou une autre logique si tu veux utiliser des heures différentes
-        //             'heure_arrivee' => $heure['heure_arrivee'],
-        //             'places_disponibles' => 30,
-        //         ]);
-        //     }
-
-        //     // 4. Commit de la transaction si tout va bien
-        //     DB::commit();
-
-        //     return response()->json([
-        //         'message' => 'Voyage créé avec succès!',
-        //         'data' => $voyage,
-        //     ], 201);
-
-        // } catch (\Exception $e) {
-        //     // Annuler la transaction en cas d'erreur
-        //     DB::rollBack();
-        //     return response()->json([
-        //         'error' => 'Une erreur est survenue lors de la création du voyage.',
-        //         'message' => $e->getMessage(),
-        //     ], 500);
-        //     print(e);
-
-        // }
 
     }
 

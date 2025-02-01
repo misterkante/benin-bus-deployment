@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Trajet;
@@ -11,9 +12,9 @@ class TrajetController extends Controller
     {
         // Récupérer les trajets avec un prix égal à zéro et inclure les arrêts de départ et d'arrivée
         $trajets = Trajet::where('prix', 0.00)
-            ->with(['depart' => function($query) {
+            ->with(['depart' => function ($query) {
                 $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt de départ
-            }, 'arrivee' => function($query) {
+            }, 'arrivee' => function ($query) {
                 $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt d'arrivée
             }])
             ->get();
@@ -27,9 +28,9 @@ class TrajetController extends Controller
     public function generateTrajets($ligneId)
     {
         $arrets = ArretLigne::where('ligne_id', $ligneId)
-                            ->orderBy('ordre')
-                            ->pluck('arret_id')
-                            ->toArray();
+            ->orderBy('ordre')
+            ->pluck('arret_id')
+            ->toArray();
 
         $trajects = [];
         foreach ($arrets as $i => $departId) {
@@ -51,26 +52,26 @@ class TrajetController extends Controller
     public function getTrajetsForLigne(Request $request)
     {
         $ligneId = $request->query('ligne_id');  // Récupérer l'ID de la ligne depuis la requête
-
+        //$ligneId=$id
         // Assurez-vous que l'ID de la ligne est valide
         if (!$ligneId) {
             return response()->json(['error' => 'Ligne ID est requis'], 400);
         }
 
         // Récupérer les trajets associés à la ligne
-        $trajets = Trajet::where('ligne_id',$ligneId)-> with(['depart' => function($query) {
+        $trajets = Trajet::where('ligne_id', $ligneId)->with(['depart' => function ($query) {
             $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt de départ
-        }, 'arrivee' => function($query) {
+        }, 'arrivee' => function ($query) {
             $query->select('id', 'nom', 'departement', 'pays', 'longitude', 'latitude'); // Sélectionner les colonnes nécessaires pour l'arrêt d'arrivée
         }])
-        ->get();
+            ->get();
 
         // Retourner les trajets sous forme de JSON
         return response()->json($trajets);
     }
 
 
-    // Liste les trajets 
+    // Liste les trajets
     public function index()
     {
         $trajets = Trajet::all();
@@ -188,11 +189,4 @@ class TrajetController extends Controller
         $trajet->delete();
         return response()->json(['message' => 'Trajet supprimé'], 200);
     }
-
-
-    
-
-
 }
-
-

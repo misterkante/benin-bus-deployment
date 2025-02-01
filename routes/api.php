@@ -84,7 +84,7 @@ Route::apiResource('trajet', TrajetController::class);
 Route::post('/soumettre-trajets', [TrajetController::class, 'updatePrix']);
 
 //-> Récupérer les trajets d'une ligne
-Route::get('/lignesDuTrajet', [TrajetController::class, 'getTrajetsForLigne']);
+Route::get('/lignesDuTrajet'/*{id}'*/, [TrajetController::class, 'getTrajetsForLigne']);
 
 
 /**

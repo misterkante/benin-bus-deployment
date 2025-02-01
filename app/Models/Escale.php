@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Escale
- * 
+ *
  * @property int $id
  * @property time without time zone $heure_depart
  * @property time without time zone $heure_arrivee
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $voyage_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Arret $arret
  * @property Voyage $voyage
  *
@@ -31,8 +31,8 @@ class Escale extends Model
 	protected $table = 'escales';
 
 	protected $casts = [
-		'heure_depart' => 'time without time zone',
-		'heure_arrivee' => 'time without time zone',
+		// 'heure_depart' => 'datetime,
+		// 'heure_arrivee' => 'datetime',
 		'places_disponibles' => 'int',
 		'arret_id' => 'int',
 		'voyage_id' => 'int'
