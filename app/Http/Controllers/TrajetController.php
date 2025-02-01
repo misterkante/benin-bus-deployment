@@ -120,20 +120,20 @@ class TrajetController extends Controller
     public function updatePrix(Request $request)
     {
         // Valider les données envoyées
-        $validator = Validator::make($request->all(), [
-            'ids' => 'required|array',
-            'ids.*' => 'integer|exists:trajets,id',  // Assurez-vous que les IDs existent dans la base de données
-            'prix' => 'required|array',
-            'prix.*' => 'numeric',  // Assurez-vous que les prix sont numériques
-            'prix' => 'size:' . count($request->input('ids')),  // Assurez-vous que les tailles des tableaux sont identiques
-        ]);
+        // $validator = Validator::make($request->all(), [
+        //     'ids' => 'required|array',
+        //     'ids.*' => 'integer|exists:trajets,id',  // Assurez-vous que les IDs existent dans la base de données
+        //     'prix' => 'required|array',
+        //     'prix.*' => 'numeric',  // Assurez-vous que les prix sont numériques
+        //     'prix' => 'size:' . count($request->input('ids')),  // Assurez-vous que les tailles des tableaux sont identiques
+        // ]);
 
         // Si la validation échoue, retourner une réponse d'erreur
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => $validator->errors(),
-            ], 422);
-        }
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'error' => $validator->errors(),
+        //     ], 422);
+        // }
 
         // Extraire les données de la requête
         $ids = $request->input('ids');
