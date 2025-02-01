@@ -125,9 +125,10 @@ class TrajetController extends Controller
             'ids.*' => 'integer|exists:trajets,id',  // Assurez-vous que les IDs existent dans la base de données
             'prix' => 'required|array',
             'prix.*' => 'numeric',  // Assurez-vous que les prix sont numériques
-            'prix' => 'size:'.count($request->input('ids')),  // Assurez-vous que les tailles des tableaux sont identiques
+            'prix' => 'size:' . count($request->input('ids')),  // Assurez-vous que les tailles des tableaux sont identiques
         ]);
 
+        // Si la validation échoue, retourner une réponse d'erreur
         if ($validator->fails()) {
             return response()->json([
                 'error' => $validator->errors(),
@@ -138,47 +139,40 @@ class TrajetController extends Controller
         $ids = $request->input('ids');
         $prix = $request->input('prix');
 
-        // Mettre à jour les trajets
-        foreach ($ids as $index => $id) {
-            // Trouver chaque trajet par son ID
-            $trajet = Trajet::find($id);
-            
-            if ($trajet) {
-                // Mettre à jour le prix du trajet
-                $trajet->prix = $prix[$index];
-                $trajet->save();  // Sauvegarder les changements
+        // Utiliser une transaction pour garantir la consistance des données
+        \DB::beginTransaction();
         try {
             // Mettre à jour les trajets
             foreach ($ids as $index => $id) {
                 // Trouver chaque trajet par son ID
                 $trajet = Trajet::find($id);
-                
+
                 if ($trajet) {
                     // Mettre à jour le prix du trajet
                     $trajet->prix = $prix[$index];
                     $trajet->save();  // Sauvegarder les changements
                 }
             }
-        }
 
-        // Retourner une réponse indiquant que la mise à jour a réussi
-        return response()->json([
-            'message' => 'Trajets mis à jour avec succès.',
-        ], 200);
+            // Si tout se passe bien, commit la transaction
+            \DB::commit();
+
+            // Retourner une réponse indiquant que la mise à jour a réussi
             return response()->json([
                 'message' => 'Trajets mis à jour avec succès.',
             ], 200);
-            
         } catch (\Exception $e) {
+            // En cas d'erreur, annuler la transaction
+            \DB::rollBack();
+
             // Loggez l'erreur pour l'examen
             \Log::error('Erreur lors de la mise à jour des trajets: ' . $e->getMessage());
+
             return response()->json([
                 'error' => 'Erreur serveur lors de la mise à jour des trajets.',
             ], 500);
         }
     }
-
-
 
     public function destroy($id)
     {
