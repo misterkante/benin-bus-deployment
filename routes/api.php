@@ -10,7 +10,6 @@ use App\Http\Controllers\LigneController;
 use App\Http\Controllers\EscaleController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\TrajetController;
-use App\Http\Controllers\TicketController;
 use App\Http\Controllers\DashboardDataController;
 use App\Http\Controllers\VoyageController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;

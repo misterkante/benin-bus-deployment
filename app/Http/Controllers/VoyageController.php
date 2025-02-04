@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\VoyageRequest;
-use App\Models\Trajet;
-use App\Models\Voyage;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use App\Models\BuVoyage;
-use App\Models\Escale;
 use App\Models\Bus;
 use App\Models\Ligne;
+use App\Models\Escale;
+use App\Models\Trajet;
+use App\Models\Voyage;
+use App\Models\BuVoyage;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use Carbon\Carbon;
@@ -19,6 +18,39 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VoyageController extends Controller
 {
+    /**
+     * Rechercher un voyage
+     * Arguments : date , depart_id et arrive_id
+     */
+    public function find_my_travel(Request $request) {
+        // validation des champs
+        $validator = Validator::make($request->all(), [
+           'depart_id' => 'required | exists:arrets,id',
+            'arrive_id' => 'required | exists:arrets,id',
+            'date' => 'required | date_format:Y-m-d',
+        ]);
+
+        if ($validator->fails()) {
+            throw new HttpResponseException(
+                response()->json(['errors' => $validator->errors()],422)
+            );
+
+        //$voyagesId = Escale::where();
+
+        }
+
+        // $request->validate([
+        //     'depart_id' => 'required | exists:arrets,id',
+        //     'arrive_id' => 'required | exists:arrets,id',
+        //     'date' => 'required | date_format:Y-m-d',
+        // ]);
+
+        // message d'erreur
+
+        // recherche des voyages correspondants
+
+    }
+
     /**
      * Display a listing of the resource.
      */

@@ -57,11 +57,5 @@ class Ligne extends Model
         return $this->hasMany(Trajet::class);
     }
 
-    // fonction pour mettre en place l'evenement de creation de ligne
-    // protected static function booted()
-    // {
-    //     static::created(function ($ligne) {
-    //         event(new LigneCreated($ligne));
-    //     });
-    // }
+    
 }
