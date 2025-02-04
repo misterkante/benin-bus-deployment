@@ -31,7 +31,7 @@ class VoyageController extends Controller
     }
 
 
-    public function nextVoyages()
+    public function nextVoyages(): JsonResponse
     {
         try {
             // Récupérer la date et l'heure actuelle
