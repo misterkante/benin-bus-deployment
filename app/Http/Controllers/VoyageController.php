@@ -36,16 +36,16 @@ class VoyageController extends Controller
     public function store(Request $request)
     {
         // Validation des données entrantes
-        $request->validate([
-            'buses' => 'required|array',
-            'buses.*' => 'exists:bus,id', // Vérifie que les bus existent dans la table 'bus'
-            'ligne_id' => 'required|exists:liges,id',
-            'heures' => 'required|array',
-            'heures.*.trajet_id' => 'required|exists:trajets,id',
-            'heures.*.heure_depart' => 'required|date_format:H:i',
-            'heures.*.heure_arrivee' => 'required|date_format:H:i',
-            'date_voyage' => 'required|date_format:Y-m-d',
-        ]);
+        // $request->validate([
+        //     'buses' => 'required|array',
+        //     'buses.*' => 'exists:bus,id', // Vérifie que les bus existent dans la table 'bus'
+        //     'ligne_id' => 'required|exists:liges,id',
+        //     'heures' => 'required|array',
+        //     'heures.*.trajet_id' => 'required|exists:trajets,id',
+        //     'heures.*.heure_depart' => 'required|date_format:H:i',
+        //     'heures.*.heure_arrivee' => 'required|date_format:H:i',
+        //     'date_voyage' => 'required|date_format:Y-m-d',
+        // ]);
 
         // Démarrer une transaction DB
        // DB::beginTransaction();
