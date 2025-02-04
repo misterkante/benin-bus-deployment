@@ -30,6 +30,32 @@ class VoyageController extends Controller
         }
     }
 
+
+    public function nextVoyages()
+    {
+        try {
+            // Récupérer la date et l'heure actuelle
+            $now = now();
+
+            // Récupérer les voyages dont l'heure de départ est supérieure ou égale à maintenant
+            $voyages = Voyage::where('heure_depart', '>=', $now)
+                            ->orderBy('heure_depart', 'asc')  // Trie les voyages par heure de départ croissante
+                            ->get();
+
+            return response()->json([
+                'message' => 'Voyages récupérés avec succès!',
+                'data' => $voyages,
+            ], 200);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Une erreur est survenue lors de la récupération des voyages.',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */
