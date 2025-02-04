@@ -34,6 +34,8 @@ class VoyageController extends Controller
                 response()->json(['errors' => $validator->errors()],422)
             );
 
+        //$voyagesId = Escale::where();
+
         }
 
         // $request->validate([
