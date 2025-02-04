@@ -58,10 +58,10 @@ class Ligne extends Model
     }
 
     // fonction pour mettre en place l'evenement de creation de ligne
-    protected static function booted()
-    {
-        static::created(function ($ligne) {
-            event(new LigneCreated($ligne));
-        });
-    }
+    // protected static function booted()
+    // {
+    //     static::created(function ($ligne) {
+    //         event(new LigneCreated($ligne));
+    //     });
+    // }
 }

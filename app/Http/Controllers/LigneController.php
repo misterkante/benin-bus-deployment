@@ -18,10 +18,10 @@ class LigneController extends Controller
     public function createLigne(Request $request)
     {
         // Validation des paramètres reçus
-        // $request->validate([
-        //     'nom' => 'required|string|max:255',  // Le nom de la ligne
-        //     'villes' => 'required|string',  // La chaîne de villes
-        // ]);
+        $request->validate([
+            'nom' => 'required|string|max:255',  // Le nom de la ligne
+            'villes' => 'required|string',  // La chaîne de villes
+        ]);
 
         // Récupérer le nom de la ligne et la chaîne des villes
         $nomLigne = $request->input('nom');
