@@ -30,18 +30,21 @@ require __DIR__ . '/auth.php';
 
 
 // Routes nécessitant d'être connecté
-Route::middleware(['auth:sanctum'])->group(function () {});
+Route::middleware(['auth:sanctum'])->group(function () {
+    /**
+     * Gestion de l'utilisateur connecté
+     */
 
+    //-> récupérer l'utilisateur connecté
+    Route::get('/user', function (Request $request) {
+        return response()->json(['user' => $request->user()]);
+    });
 
-/**
- * Gestion de l'utilisateur connecté
- */
-//-> récupérer l'utilisateur connecté
-Route::get('/user', function (Request $request) {
-    return $request->user();
+    //-> changer le mot de passe de l'utilisateur
+    Route::put('/profil/password', [ProfilController::class, 'update_password']);
 });
-//-> changer le mot de passe
-Route::put('/profil/password', [ProfilController::class, 'update_password']);
+
+
 
 /**
  * Gestion des lignes
@@ -110,9 +113,9 @@ Route::apiResource('ticket', TicketController::class);
  * Gestion de(s) utilisateurs(s)
  */
 //-> récupérer tous les utilisateurs
-Route::get('/user', function (Request $request) {
-    return response()->json(User::all());
-});
+// Route::get('/users', function (Request $request) {
+//     return response()->json(User::all());
+// });
 
 
 /**
