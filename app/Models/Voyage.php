@@ -63,10 +63,7 @@ class Voyage extends Model
 		return $this->hasMany(Ticket::class);
 	}
 
-	
-	public function trajet()
-	{
-		return $this->belongsTo(Trajet::class, 'trajet_id');
-	}
+
+
 
 }
