@@ -21,7 +21,7 @@ class VoyageController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $voyages = Voyage::with('trajet')->get();
+            $voyages = Voyage::all();
             return response()->json($voyages);
         } catch (\Exception $e) {
             return response()->json([
