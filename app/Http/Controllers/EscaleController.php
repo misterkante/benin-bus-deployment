@@ -11,8 +11,16 @@ class EscaleController extends Controller
      */
     public function index()
     {
-        //
-    }
+        try{
+            $escales = Escale::all();
+            return response( )->json($escales) ;
+        }catch(\Exception $e){
+            return response()->json([
+                'error'=>'Erreur lors de la recuperation des escales'
+            ], 500);
+
+        }
+        }
 
     /**
      * Store a newly created resource in storage.
