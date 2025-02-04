@@ -48,41 +48,6 @@ class VoyageController extends Controller
         // ]);
 
         // Démarrer une transaction DB
-       // DB::beginTransaction();
-
-        // try {
-
-        //     // 1. Créer le voyage
-        //     $voyage = Voyage::create([
-        //         'date_voyage' => $request->date_voyage,
-        //         'heure_depart' => $request->heures[0]["heure_depart"], // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
-        //         'ligne_id' => $request->ligne_id, // Associer la ligne au voyage
-
-        //     ]);
-
-
-
-        //     // 4. Commit de la transaction si tout va bien
-        //     DB::commit();
-
-        //     return response()->json([
-        //         'message' => 'Voyage créé avec succès!',
-        //         'data' => $voyage,
-        //     ], 201);
-
-        // } catch (\Exception $e) {
-        //     // Annuler la transaction en cas d'erreur
-        //     DB::rollBack();
-        //     return response()->json([
-        //         'error' => 'Une erreur est survenue lors de la création du voyage.',
-        //         'message' => $e->getMessage(),
-        //     ], 500);
-        //    // print(e);
-
-        // }
-
-
-        // Démarrer une transaction DB
         DB::beginTransaction();
 
         try {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TicketController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -8,10 +9,10 @@ use App\Http\Controllers\ArretController;
 use App\Http\Controllers\LigneController;
 use App\Http\Controllers\EscaleController;
 use App\Http\Controllers\ProfilController;
-use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TrajetController;
-use App\Http\Controllers\VoyageController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\DashboardDataController;
+use App\Http\Controllers\VoyageController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
@@ -30,18 +31,22 @@ require __DIR__ . '/auth.php';
 
 
 // Routes nécessitant d'être connecté
-Route::middleware(['auth:sanctum'])->group(function () {});
+Route::middleware(['auth:sanctum'])->group(function () {
 
+    /**
+     * Gestion de l'utilisateur connecté
+     */
+    //-> récupérer l'utilisateur connecté
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-/**
- * Gestion de l'utilisateur connecté
- */
-//-> récupérer l'utilisateur connecté
-Route::get('/user', function (Request $request) {
-    return $request->user();
+    //-> changer le mot de passe
+    Route::put('/profil/password', [ProfilController::class, 'update_password']);
+
 });
-//-> changer le mot de passe
-Route::put('/profil/password', [ProfilController::class, 'update_password']);
+
+
 
 /**
  * Gestion des lignes
@@ -83,6 +88,8 @@ Route::post('/soumettre-trajets', [TrajetController::class, 'updatePrix']);
 //-> Récupérer les trajets d'une ligne
 Route::get('/lignesDuTrajet'/*{id}'*/, [TrajetController::class, 'getTrajetsForLigne']);
 
+Route::get('/next-voyages',[VoyageController::class, 'nextVoyages']);
+
 
 /**
  * Gestion des voyages
@@ -113,11 +120,6 @@ Route::apiResource('ticket', TicketController::class);
 Route::get('/user', function (Request $request) {
     return response()->json(User::all());
 });
-
-
-/**
- * Routes pour effectuer des tests
- */
 
 /**
  * Route(s) pour les statistiques
