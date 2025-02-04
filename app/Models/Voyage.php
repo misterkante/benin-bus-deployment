@@ -54,7 +54,7 @@ class Voyage extends Model
 	public function bus()
 	{
 		return $this->belongsToMany(Bu::class, 'bu_voyages', 'voyage_id', 'bus_id')
-					->withPivot('id', 'places_disponibles')
+					->withPivot('id')
 					->withTimestamps();
 	}
 
