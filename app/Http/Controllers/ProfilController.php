@@ -51,7 +51,7 @@ class ProfilController extends Controller
                 ]);
 
             // return response()->json([
-            //     'error' => "Une erreur s'est produite"
+            //     'error' => "Oups! Une erreur s'est produite"
             // ]);
         }
     }

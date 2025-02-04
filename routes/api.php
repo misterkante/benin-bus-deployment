@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\TicketController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -9,8 +8,10 @@ use App\Http\Controllers\ArretController;
 use App\Http\Controllers\LigneController;
 use App\Http\Controllers\EscaleController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TrajetController;
 use App\Http\Controllers\VoyageController;
+use App\Http\Controllers\DashboardDataController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 /*
@@ -29,22 +30,18 @@ require __DIR__ . '/auth.php';
 
 
 // Routes nécessitant d'être connecté
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {});
 
-    /**
-     * Gestion de l'utilisateur connecté
-     */
-    //-> récupérer l'utilisateur connecté
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
 
-    //-> changer le mot de passe
-    Route::put('/profil/password', [ProfilController::class, 'update_password']);
-
+/**
+ * Gestion de l'utilisateur connecté
+ */
+//-> récupérer l'utilisateur connecté
+Route::get('/user', function (Request $request) {
+    return $request->user();
 });
-
-
+//-> changer le mot de passe
+Route::put('/profil/password', [ProfilController::class, 'update_password']);
 
 /**
  * Gestion des lignes
@@ -121,3 +118,8 @@ Route::get('/user', function (Request $request) {
 /**
  * Routes pour effectuer des tests
  */
+
+/**
+ * Route(s) pour les statistiques
+ */
+Route::get('/statistics', [DashboardDataController::class, 'index']);
