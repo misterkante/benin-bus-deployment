@@ -71,7 +71,7 @@ class VoyageController extends Controller
     {
         try {
             // Récupérer les voyages dont la date de départ est aujourd'hui ou dans le futur
-            $voyages = Voyage::with(['trajet', 'ligne.trajets.depart', 'ligne.trajets.arrivee', 'bus'])
+            $voyages = Voyage::with([ 'ligne.trajets.depart', 'ligne.trajets.arrivee', 'bus'])
                              ->where('date_voyage', '>=', Carbon::now())
                              ->get();
 
