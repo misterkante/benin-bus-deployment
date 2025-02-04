@@ -12,6 +12,10 @@ use App\Models\Escale;
 use App\Models\Bus;
 use App\Models\Ligne;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
+use Carbon\Carbon;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VoyageController extends Controller
 {
@@ -31,30 +35,43 @@ class VoyageController extends Controller
     }
 
 
-    public function nextVoyages(): JsonResponse
+    public function nextVoyages(Request $request)
     {
         try {
-            // Récupérer la date et l'heure actuelle
-            $now = now();
+            // Récupérer les voyages dont la date de départ est aujourd'hui ou dans le futur
+            $voyages = Voyage::with(['trajet', 'trajet.depart', 'trajet.arrivee', 'bus'])
+                             ->where('date_voyage', '>=', Carbon::now())
+                             ->get();
 
-            // Récupérer les voyages dont l'heure de départ est supérieure ou égale à maintenant
-            $voyages = Voyage::where('heure_depart', '>=', $now)
-                            ->orderBy('heure_depart', 'asc')  // Trie les voyages par heure de départ croissante
-                            ->get();
+            // Vérifier si des voyages sont trouvés
+            if ($voyages->isEmpty()) {
+                return response()->json([
+                    'message' => 'Aucun voyage trouvé pour la date spécifiée.',
+                ], 404);
+            }
 
+            // Retourner les voyages avec leurs trajets, arrêts et bus associés
+            return response()->json($voyages, 200);
+        } catch (QueryException $e) {
+            // Gestion des erreurs de requête (par exemple, problème de base de données)
             return response()->json([
-                'message' => 'Voyages récupérés avec succès!',
-                'data' => $voyages,
-            ], 200);
-            
+                'error' => 'Erreur lors de la récupération des données.',
+                'message' => $e->getMessage(),
+            ], 500);
+        } catch (ModelNotFoundException $e) {
+            // Gestion d'une erreur spécifique si aucun modèle n'a été trouvé
+            return response()->json([
+                'error' => 'Modèle non trouvé.',
+                'message' => $e->getMessage(),
+            ], 404);
         } catch (\Exception $e) {
+            // Gestion de toutes les autres erreurs
             return response()->json([
-                'error' => 'Une erreur est survenue lors de la récupération des voyages.',
+                'error' => 'Une erreur interne s\'est produite.',
                 'message' => $e->getMessage(),
             ], 500);
         }
     }
-
 
     /**
      * Store a newly created resource in storage.
