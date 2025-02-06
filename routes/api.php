@@ -86,13 +86,18 @@ Route::post('/soumettre-trajets', [TrajetController::class, 'updatePrix']);
 //-> Récupérer les trajets d'une ligne
 Route::get('/lignesDuTrajet'/*{id}'*/, [TrajetController::class, 'getTrajetsForLigne']);
 
-Route::get('/next-voyages',[VoyageController::class, 'nextVoyages']);
-
 
 /**
  * Gestion des voyages
  */
 Route::apiResource('voyages', VoyageController::class);
+
+//-> Liste les voyages qu'on peut réserver
+Route::get('/next-voyages', [VoyageController::class, 'nextVoyages']);
+
+//-> Rechercher des voyages en fonction de la destination et du depart
+Route::post('/voyages/search-results', [VoyageController::class, 'find_my_travel']);
+
 
 /**
  * Gestion des escales de voyage

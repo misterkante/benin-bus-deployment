@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use Carbon\Carbon;
 use App\Models\Bus;
 use App\Models\Ligne;
 use App\Models\Escale;
@@ -11,9 +13,11 @@ use App\Models\BuVoyage;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\QueryException;
-use Carbon\Carbon;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\VoyageRequest;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VoyageController extends Controller
@@ -22,34 +26,52 @@ class VoyageController extends Controller
      * Rechercher un voyage
      * Arguments : date , depart_id et arrive_id
      */
-    public function find_my_travel(Request $request) {
-        // validation des champs
-        $validator = Validator::make($request->all(), [
-           'depart_id' => 'required | exists:arrets,id',
-            'arrive_id' => 'required | exists:arrets,id',
-            'date' => 'required | date_format:Y-m-d',
-        ]);
+    public function find_my_travel(Request $request)
+    {
+        try {
+            // Validation des champs
+            $validator = Validator::make($request->all(), [
+                'depart_id' => 'required|exists:arrets,id',
+                'arrivee_id' => 'required|exists:arrets,id',
+                'date' => 'nullable|date_format:Y-m-d',
+            ]);
 
-        if ($validator->fails()) {
-            throw new HttpResponseException(
-                response()->json(['errors' => $validator->errors()],422)
-            );
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
 
-        //$voyagesId = Escale::where();
+            // Récupérer les IDs des lignes des trajets concernés
+            $trajetsId = Trajet::where('depart_id', $request->depart_id)
+                ->where('arrivee_id', $request->arrivee_id)
+                ->pluck('ligne_id'); // Récupère uniquement les IDs
 
+            if ($trajetsId->isEmpty()) {
+                return response()->json(['message' => 'Aucun résultat trouvé'], 404);
+            }
+
+            // Recherche des voyages correspondants
+            $voyages = Voyage::whereIn('ligne_id', $trajetsId);
+
+            // Filtrer par date si fournie
+            if ($request->has('date')) {
+                $voyages->whereDate('date_voyage', $request->date);
+            }
+
+            $voyages = $voyages->get();
+
+            if ($voyages->isEmpty()) {
+                return response()->json(['message' => 'Aucun voyage trouvé'], 404);
+            }
+
+            return response()->json($voyages);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Une erreur est survenue',
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        // $request->validate([
-        //     'depart_id' => 'required | exists:arrets,id',
-        //     'arrive_id' => 'required | exists:arrets,id',
-        //     'date' => 'required | date_format:Y-m-d',
-        // ]);
-
-        // message d'erreur
-
-        // recherche des voyages correspondants
-
     }
+
 
     /**
      * Display a listing of the resource.
@@ -71,9 +93,9 @@ class VoyageController extends Controller
     {
         try {
             // Récupérer les voyages dont la date de départ est aujourd'hui ou dans le futur
-            $voyages = Voyage::with([ 'ligne.trajets.depart', 'ligne.trajets.arrivee', 'bus'])
-                             ->where('date_voyage', '>=', Carbon::now())
-                             ->get();
+            $voyages = Voyage::with(['ligne.trajets.depart', 'ligne.trajets.arrivee', 'bus'])
+                ->where('date_voyage', '>=', Carbon::now())
+                ->get();
 
             // Vérifier si des voyages sont trouvés
             if ($voyages->isEmpty()) {
@@ -175,7 +197,6 @@ class VoyageController extends Controller
                 'message' => 'Voyage créé avec succès!',
                 'data' => $voyage,
             ], 201);
-
         } catch (\Exception $e) {
             // Annuler la transaction en cas d'erreur
             DB::rollBack();
@@ -183,10 +204,8 @@ class VoyageController extends Controller
                 'error' => 'Une erreur est survenue lors de la création du voyage.',
                 'message' => $e->getMessage(),
             ], 500);
-            print(e);
-
+            print($e);
         }
-
     }
 
 
