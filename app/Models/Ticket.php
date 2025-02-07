@@ -38,8 +38,8 @@ class Ticket extends Model
 		'code_ticket' => 'int',
 		'prix' => 'float',
 		'siege' => 'int',
-		'depart_id' => 'int',
-		'arrivee_id' => 'int',
+		'trajet_id' => 'int',
+		
 		'user_id' => 'int',
 		'voyage_id' => 'int'
 	];
@@ -49,15 +49,15 @@ class Ticket extends Model
 		'prix',
 		'siege',
 		'statut',
-		'depart_id',
+		'trajet_id',
 		'arrivee_id',
 		'user_id',
 		'voyage_id'
 	];
 
-	public function arret()
+	public function trajet()
 	{
-		return $this->belongsTo(Arret::class, 'depart_id');
+		return $this->belongsTo(Trajet::class);
 	}
 
 	public function user()

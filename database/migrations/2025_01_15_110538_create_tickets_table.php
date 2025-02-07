@@ -16,12 +16,10 @@ return new class extends Migration
             $table->bigInteger('code_ticket');
             $table->decimal('prix', 8, 2);
             $table->integer('siege');
-            $table->enum('statut', ['réservé', 'annulé', 'utilisé']);
+            $table->enum('statut', ['réservé', 'annulé', 'utilisé'])->default('réservé');
 
             //clés étrangères
-            $table->foreignId('depart_id')->constrained('arrets');
-            $table->foreignId('arrivee_id')->constrained('arrets');
-            
+            $table->foreignId('trajet_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('voyage_id')->constrained();
             $table->timestamps();
