@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Ticket
- * 
+ *
  * @property int $id
  * @property int $code_ticket
  * @property float $prix
@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $voyage_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * 
+ *
  * @property Arret $arret
  * @property User $user
  * @property Voyage $voyage
@@ -39,7 +39,6 @@ class Ticket extends Model
 		'prix' => 'float',
 		'siege' => 'int',
 		'trajet_id' => 'int',
-		
 		'user_id' => 'int',
 		'voyage_id' => 'int'
 	];
@@ -50,7 +49,6 @@ class Ticket extends Model
 		'siege',
 		'statut',
 		'trajet_id',
-		'arrivee_id',
 		'user_id',
 		'voyage_id'
 	];

@@ -17,7 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\VoyageRequest;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\HttpExceptions\HttpResponseException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VoyageController extends Controller
@@ -64,7 +64,7 @@ class VoyageController extends Controller
             }
 
             return response()->json($voyages);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Une erreur est survenue',
                 'message' => $e->getMessage(),
@@ -81,7 +81,7 @@ class VoyageController extends Controller
         try {
             $voyages = Voyage::all();
             return response()->json($voyages);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'error' => "Oups! Une erreur s'est produite au cours de la récupération des données."
             ], 500);
@@ -118,7 +118,7 @@ class VoyageController extends Controller
                 'error' => 'Modèle non trouvé.',
                 'message' => $e->getMessage(),
             ], 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Gestion de toutes les autres erreurs
             return response()->json([
                 'error' => 'Une erreur interne s\'est produite.',
@@ -197,7 +197,7 @@ class VoyageController extends Controller
                 'message' => 'Voyage créé avec succès!',
                 'data' => $voyage,
             ], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Annuler la transaction en cas d'erreur
             DB::rollBack();
             return response()->json([
@@ -240,7 +240,7 @@ class VoyageController extends Controller
                 'msg' => 'Voyage mis à jour avec succès.',
                 'voyage' => $voyage
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'error' => "Oups! Une erreur s'est produite lors de la mise à jour du voyage."
             ], 500);
@@ -261,7 +261,7 @@ class VoyageController extends Controller
         try {
             $voyage->delete();
             return response()->json(['msg' => 'Voyage supprimé avec succès.']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'error' => "Oups! Une erreur s'est produite lors de la suppression du voyage."
             ], 500);

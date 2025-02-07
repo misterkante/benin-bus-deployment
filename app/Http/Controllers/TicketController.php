@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Ticket;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -15,18 +16,38 @@ class TicketController extends Controller
         return response()->json($tickets, 200);
     }
 
-    // Crée un ticket
+    // Générateur de code de tickets
+    public function genererCodeUnique() {
+        $prefixe = 'BENBUS-';
+        $nombreAleatoire = Str::random(9); // Génère une chaîne aléatoire de 9 caractères
+        $code = $prefixe . $nombreAleatoire;
+
+        // Vérifier si le code existe déjà dans la base de données
+        $ticketExistant = Ticket::where('code_ticket', $code)->exists();
+
+        if ($ticketExistant) {
+          return $this->genererCodeUnique(); // Réessayer si le code existe déjà
+        }
+
+        return $code;
+      }
+
+    // Création de ticket
     public function store(Request $request)
     {
         $validated = $request->validate([
             'voyage_id' => 'required|exists:voyages,id',
             'user_id' => 'required|exists:users,id',
-            'depart_id' => 'required|exists:arrets,id',
-            'arrive_id' => 'required|exists:arrets,id',
+            'trajet_id' => 'required|exists:trajets,id',
             'prix' => 'required|numeric',
+            'siege'=> 'required|string',
         ]);
 
+        // Ajout des attributs nécessaires pour la création
+        $validated['code_ticket'] = $this->genererCodeUnique();
+
         $ticket = Ticket::create($validated);
+
         return response()->json([
             'message' => 'Ticket créé avec succès',
             'ticket' => $ticket
