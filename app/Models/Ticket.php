@@ -35,9 +35,7 @@ class Ticket extends Model
 	protected $table = 'tickets';
 
 	protected $casts = [
-		'code_ticket' => 'int',
 		'prix' => 'float',
-		'siege' => 'int',
 		'trajet_id' => 'int',
 		'user_id' => 'int',
 		'voyage_id' => 'int'

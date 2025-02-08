@@ -21,7 +21,7 @@ class TicketController extends Controller
     public function genererCodeUnique()
     {
         $prefixe = 'BENBUS-';
-        $nombreAleatoire = Str::random(9); // Génère une chaîne aléatoire de 9 caractères
+        $nombreAleatoire = Str::upper(Str::random(9)); // Génère une chaîne aléatoire de 9 caractères
         $code = $prefixe . $nombreAleatoire;
 
         // Vérifier si le code existe déjà dans la base de données
@@ -55,20 +55,23 @@ class TicketController extends Controller
             }
 
             $validated = $validator->validated();
+            $validated['user_id'] = $request->user()->id;
+            $tickets = [];
 
             foreach ($validated['sieges'] as $siege) {
                 // Ajout des attributs nécessaires pour la création
                 $validated['code_ticket'] = $this->genererCodeUnique();
-                $validated['user_id'] = $request->user()->id;
+                $validated['siege'] = $siege;
 
                 // Création du ticket
                 $ticket = Ticket::create($validated);
+                $tickets[] = $ticket;
             }
 
 
             return response()->json([
                 'message' => 'Ticket(s) créé(s) avec succès',
-                'ticket' => $ticket
+                'ticket' => $tickets
             ], 201);
         } catch (\Exception $e) {
             return response()->json([

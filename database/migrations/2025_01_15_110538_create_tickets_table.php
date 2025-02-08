@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('code_ticket');
+            $table->string('code_ticket');
             $table->decimal('prix', 8, 2);
-            $table->integer('siege');
+            $table->string('siege');
             $table->enum('statut', ['réservé', 'annulé', 'utilisé'])->default('réservé');
 
             //clés étrangères
