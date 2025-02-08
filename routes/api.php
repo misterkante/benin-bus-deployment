@@ -49,11 +49,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
      * Gestion des tickets de voyage
      */
     Route::apiResource('ticket', TicketController::class);
-});
 
 
-
-/**
+    /**
  * Gestion des lignes
  */
 Route::apiResource('ligne', LigneController::class);
@@ -117,6 +115,17 @@ Route::apiResource('escale', EscaleController::class);
 Route::apiResource('bus', BusController::class);
 
 
+/**
+ * Route(s) pour les statistiques
+ */
+Route::get('/statistics', [DashboardDataController::class, 'index']);
+
+});
+
+
+
+
+
 
 
 /**
@@ -132,7 +141,3 @@ Route::apiResource('bus', BusController::class);
  * Routes pour effectuer des tests
  */
 
-/**
- * Route(s) pour les statistiques
- */
-Route::get('/statistics', [DashboardDataController::class, 'index']);
