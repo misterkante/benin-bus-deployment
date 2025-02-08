@@ -33,6 +33,8 @@ class RegisteredUserController extends Controller
         // Assignation du role à l'utilisateur
         $user->assignRole('client');
 
+        $token = $user->createToken('bearer-token')->plainTextToken;
+
         $user->generateVerificationCode();
 
         // Envoi d'email
@@ -42,6 +44,11 @@ class RegisteredUserController extends Controller
             return response()->json(["error" => $e]);
         }
 
-        return response()->json(['msg' => "Votre compte a été créé avec succès"]);
+        Auth::login($user);
+        
+        return response()->json([
+            'msg' => "Votre compte a été créé avec succès",
+            'token' => $token
+        ]);
     }
 }
