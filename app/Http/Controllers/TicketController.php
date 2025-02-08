@@ -62,8 +62,6 @@ class TicketController extends Controller
                 $validated['user_id'] = $request->user()->id;
 
                 // Création du ticket
-                $validated['code_ticket'] = $this->genererCodeUnique();
-                $validated['user_id'] = $request->user()->id;
                 $ticket = Ticket::create($validated);
             }
 
