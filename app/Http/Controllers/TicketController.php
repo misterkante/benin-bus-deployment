@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TicketController extends Controller
 {
@@ -17,7 +18,8 @@ class TicketController extends Controller
     }
 
     // Générateur de code de tickets
-    public function genererCodeUnique() {
+    public function genererCodeUnique()
+    {
         $prefixe = 'BENBUS-';
         $nombreAleatoire = Str::random(9); // Génère une chaîne aléatoire de 9 caractères
         $code = $prefixe . $nombreAleatoire;
@@ -26,33 +28,58 @@ class TicketController extends Controller
         $ticketExistant = Ticket::where('code_ticket', $code)->exists();
 
         if ($ticketExistant) {
-          return $this->genererCodeUnique(); // Réessayer si le code existe déjà
+            return $this->genererCodeUnique(); // Réessayer si le code existe déjà
         }
 
         return $code;
-      }
+    }
 
     // Création de ticket
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'voyage_id' => 'required|exists:voyages,id',
-            'user_id' => 'required|exists:users,id',
-            'trajet_id' => 'required|exists:trajets,id',
-            'prix' => 'required|numeric',
-            'siege'=> 'required|string',
-        ]);
+        try {
+            // Validation des données
+            $validator = Validator::make($request->all(), [
+                'voyage_id' => 'required|exists:voyages,id',
+                'trajet_id' => 'required|exists:trajets,id',
+                'prix' => 'required|numeric',
+                'sieges' => 'required|array',
+            ]);
 
-        // Ajout des attributs nécessaires pour la création
-        $validated['code_ticket'] = $this->genererCodeUnique();
+            // Vérifier si la validation a échoué
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Erreur de validation',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
 
-        $ticket = Ticket::create($validated);
+            $validated = $validator->validated();
 
-        return response()->json([
-            'message' => 'Ticket créé avec succès',
-            'ticket' => $ticket
-        ], 201);
+            foreach ($validated['sieges'] as $siege) {
+                // Ajout des attributs nécessaires pour la création
+                $validated['code_ticket'] = $this->genererCodeUnique();
+                $validated['user_id'] = $request->user()->id;
+
+                // Création du ticket
+                $validated['code_ticket'] = $this->genererCodeUnique();
+                $validated['user_id'] = $request->user()->id;
+                $ticket = Ticket::create($validated);
+            }
+
+
+            return response()->json([
+                'message' => 'Ticket(s) créé(s) avec succès',
+                'ticket' => $ticket
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Une erreur est survenue lors de la création du ticket',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
 
     // Affiche les détails d’un ticket
     public function show($id)
@@ -95,4 +122,3 @@ class TicketController extends Controller
         return response()->json(['message' => 'Ticket supprimé'], 200);
     }
 }
-

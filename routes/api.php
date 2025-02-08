@@ -31,6 +31,7 @@ require __DIR__ . '/auth.php';
 
 // Routes nécessitant d'être connecté
 Route::middleware(['auth:sanctum'])->group(function () {
+
     /**
      * Gestion de l'utilisateur connecté
      */
@@ -42,6 +43,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //-> changer le mot de passe de l'utilisateur
     Route::put('/profil/password', [ProfilController::class, 'update_password']);
+
+
+    /**
+     * Gestion des tickets de voyage
+     */
+    Route::apiResource('ticket', TicketController::class);
 });
 
 
@@ -110,10 +117,6 @@ Route::apiResource('escale', EscaleController::class);
 Route::apiResource('bus', BusController::class);
 
 
-/**
- * Gestion des tickets de voyage
- */
-Route::apiResource('ticket', TicketController::class);
 
 
 /**
