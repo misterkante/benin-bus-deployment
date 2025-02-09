@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 
 use Exception;
+use App\Models\Bu;
 use Carbon\Carbon;
 use App\Models\Ticket;
+use App\Models\Voyage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
@@ -96,10 +98,11 @@ class TicketController extends Controller
                 'voyage.bus:id,immatriculation',
                 'trajet:id,depart_id,arrivee_id',
                 'trajet.depart:id,nom',
-                'trajet.arrivee:id,nom', ])
-            ->whereHas('voyage', function ($query) {
-                $query->where('date_voyage', '>=', Carbon::now()); // Voyages futurs uniquement
-            })
+                'trajet.arrivee:id,nom',
+            ])
+                ->whereHas('voyage', function ($query) {
+                    $query->where('date_voyage', '>=', Carbon::now()); // Voyages futurs uniquement
+                })
                 ->where('user_id', '=', $request->user()->id)
                 ->get();
 
@@ -111,7 +114,6 @@ class TicketController extends Controller
             }
 
             return response()->json($tickets, 200);
-
         } catch (QueryException $e) {
             // Gestion des erreurs de requête (par exemple, problème de base de données)
             return response()->json([
@@ -134,6 +136,50 @@ class TicketController extends Controller
     }
 
 
+    // Affiche les sieges reservés
+    public function booked_places(Request $request)
+    {
+        try {
+            // Validation des données de la requête
+        $validator = Validator::make($request->all(), [
+            'voyage_id' => 'required|exists:voyages,id'
+        ]);
+
+        // Si la validation échoue, retourner les erreurs
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $busId = Voyage::find($request->voyage_id)
+        ->buses() // Accéder à la relation avec les bus via la table pivot
+        ->first()
+        ->id;
+
+
+        $totalSeat = Bu::where('id', "=", $busId)
+            ->pluck('places');
+
+        $seatBooked = Ticket::where('voyage_id', '=', $request->voyage_id)->pluck('code_ticket');
+
+        $totalSeatBooked = $seatBooked->count();
+
+        $bookedSeatNumbers =  $bookedSeatNumbers = $seatBooked->implode(',');;
+
+        return response()->json([
+            'totalSeat' => $totalSeat,
+            'bookedSeatNumbers' => $bookedSeatNumbers,
+            'totalSeatBooked' => $totalSeatBooked
+        ], 200);
+        }catch (Exception $e) {
+            return response()->json([
+                'error' => "Une erreur est survenue lors du traitement.",
+                'message' => $e->getMessage()
+            ], 500);
+        }
+
+    }
     // Affiche les détails d’un ticket
     public function show($id)
     {
@@ -145,6 +191,7 @@ class TicketController extends Controller
 
         return response()->json($ticket, 200);
     }
+
     public function update(Request $request, $id)
     {
         $ticket = Ticket::find($id);
@@ -163,6 +210,7 @@ class TicketController extends Controller
         $ticket->update($validated);
         return response()->json($ticket, 200);
     }
+
 
     public function destroy($id)
     {

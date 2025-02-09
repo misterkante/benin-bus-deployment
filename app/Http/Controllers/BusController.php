@@ -29,42 +29,47 @@ class BusController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request): JsonResponse
-    {
-        // Validation des données de la requête
-        $validator = Validator::make($request->all(), [
-            'immatriculation' => 'required',
-            'places' => 'required',
-            'statut' => 'required',
+{
+    // Validation des données avec gestion d'erreur personnalisée
+    $validator = Validator::make($request->all(), [
+        'immatriculation' => 'required|string',
+        'places' => ['required', 'regex:/^\d+$/', function ($attribute, $value, $fail) {
+            if (((int) $value) % 2 !== 0) {
+                $fail("Le nombre de places doit être un nombre pair.");
+            }
+        }],
+        'statut' => 'required|string',
+    ]);
+
+    // Si la validation échoue, retourner une réponse JSON 422
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Erreur de validation',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
+    try {
+        // Création du bus
+        $bus = Bu::create([
+            'immatriculation' => $request->input('immatriculation'),
+            'places' => (int) $request->input('places'), // Conversion en entier
+            'statut' => $request->input('statut'),
+            'compagnie_id' => 1,
         ]);
 
-        // Si la validation échoue, retourner les erreurs
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422); // 422 Unprocessable Entity
-        }
-
-        // Enregistrer les données du bus
-        try {
-            $bus = new Bu();
-            $bus->immatriculation = $request->input('immatriculation');
-            $bus->places = $request->input('places');
-            $bus->statut = $request->input('statut');
-            $bus->compagnie_id = 1;
-            $bus->save(); // Sauvegarde dans la base de données
-
-            return response()->json([
-                'msg' => 'Bus ajouté avec succès.',
-                'bus' => $bus // Vous pouvez retourner les informations du bus si vous le souhaitez
-            ], 201); // 201 Created
-        } catch (\Exception $e) {
-            // Si une erreur se produit, retourner un message d'erreur
-            return response()->json([
-                'error' => "Oups! Une erreur est survenue lors de l'ajout du bus.",
-                'message' => $e->getMessage()
-            ], 500); // 500 Internal Server Error
-        }
+        return response()->json([
+            'msg' => 'Bus ajouté avec succès.',
+            'bus' => $bus
+        ], 201);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => "Oups! Une erreur est survenue lors de l'ajout du bus.",
+            'message' => $e->getMessage()
+        ], 500);
     }
+}
+
 
     /**
      * Display the specified resource.

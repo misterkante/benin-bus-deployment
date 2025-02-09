@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('statut', ['réservé', 'annulé', 'utilisé'])->default('réservé');
 
             //clés étrangères
+            $table->foreignId('bus_id')->constrained('bus');
             $table->foreignId('trajet_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('voyage_id')->constrained();

@@ -59,6 +59,11 @@ class Voyage extends Model
                     ;
 	}
 
+    public function buses()
+{
+    return $this->belongsToMany(Bu::class, 'bu_voyages', 'voyage_id', 'bus_id');
+}
+
 	public function tickets()
 	{
 		return $this->hasMany(Ticket::class);

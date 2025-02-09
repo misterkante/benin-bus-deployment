@@ -24,7 +24,7 @@ class DashboardDataController extends Controller
         // Profit total généré,
         $profit = Paiement::whereBetween('date_paiement', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
         ->sum('montant');
-        
+
         return response()->json([
             'users' => $users,
             'bus' => $bus,

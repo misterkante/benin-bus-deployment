@@ -8,6 +8,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Bus;
 
 /**
  * Class Ticket
@@ -32,37 +33,44 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Ticket extends Model
 {
-	protected $table = 'tickets';
+    protected $table = 'tickets';
 
-	protected $casts = [
-		'prix' => 'float',
-		'trajet_id' => 'int',
-		'user_id' => 'int',
-		'voyage_id' => 'int'
-	];
+    protected $casts = [
+        'prix' => 'float',
+        'trajet_id' => 'int',
+        'user_id' => 'int',
+        'voyage_id' => 'int',
+        'bus_id'  => 'int'
+    ];
 
-	protected $fillable = [
-		'code_ticket',
-		'prix',
-		'siege',
-		'statut',
-		'trajet_id',
-		'user_id',
-		'voyage_id'
-	];
+    protected $fillable = [
+        'code_ticket',
+        'prix',
+        'siege',
+        'statut',
+        'trajet_id',
+        'user_id',
+        'bus_id',
+        'voyage_id'
+    ];
 
-	public function trajet()
-	{
-		return $this->belongsTo(Trajet::class);
-	}
+    public function trajet()
+    {
+        return $this->belongsTo(Trajet::class);
+    }
 
-	public function user()
-	{
-		return $this->belongsTo(User::class);
-	}
+    public function bus()
+    {
+        return $this->belongsTo(Bus::class);
+    }
 
-	public function voyage()
-	{
-		return $this->belongsTo(Voyage::class);
-	}
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function voyage()
+    {
+        return $this->belongsTo(Voyage::class);
+    }
 }

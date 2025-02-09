@@ -51,6 +51,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('ticket', TicketController::class);
    // afficher les tickets actifs de l'utilisateur
     Route::get('/next-tickets', [TicketController::class, 'next_tickets']);
+    //
+    Route::post('/booked_places', [TicketController::class, 'booked_places']);
 
 
     /**

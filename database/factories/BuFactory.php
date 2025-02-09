@@ -18,7 +18,7 @@ class BuFactory extends Factory
     {
         return [
             'immatriculation' => $this->faker->randomNumber(),
-            'places' => $this->faker->numberBetween(30, 80),
+            'places' =>50,
             'statut'=> 'disponible',
             'compagnie_id' => 1
         ];
