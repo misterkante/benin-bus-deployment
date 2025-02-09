@@ -91,7 +91,12 @@ class TicketController extends Controller
     public function next_tickets(Request $request)
     {
         try {
-            $tickets = Ticket::with(['voyage:id,date_voyage,heure_depart', 'trajet.depart:id,nom', 'trajet.arrivee:id,nom', ])
+            $tickets = Ticket::with([
+                'voyage:id,date_voyage,heure_depart',
+                'voyage.bus:id,immatriculation',
+                'trajet:id,depart_id,arrivee_id',
+                'trajet.depart:id,nom',
+                'trajet.arrivee:id,nom', ])
             ->whereHas('voyage', function ($query) {
                 $query->where('date_voyage', '>=', Carbon::now()); // Voyages futurs uniquement
             })

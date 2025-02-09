@@ -148,46 +148,51 @@ class VoyageController extends Controller
         DB::beginTransaction();
 
         try {
-            // 1. Créer le voyage
-            $voyage = Voyage::create([
-                'date_voyage' => $request->date_voyage,
-                'heure_depart' => $request->heures[0]["heure_depart"], // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
-                'ligne_id' => $request->ligne_id, // Associer la ligne au voyage
-            ]);
 
-            // 2. Insérer les bus pour ce voyage
+            $voyages = [];
+
             foreach ($request->buses as $busId) {
+                // 1. Créer le voyage
+                $voyage = Voyage::create([
+                    'date_voyage' => $request->date_voyage,
+                    'heure_depart' => $request->heures[0]["heure_depart"], // Tu pourrais choisir d'ajouter l'heure départ si nécessaire
+                    'ligne_id' => $request->ligne_id, // Associer la ligne au voyage
+                ]);
+
+                // 2. Associer le bus au voyage
                 BuVoyage::create([
                     'bus_id' => $busId,
                     'voyage_id' => $voyage->id,
                 ]);
-            }
 
-            // 3. Insérer les trajets et escales avec les heures de départ et d'arrivée
-            foreach ($request->heures as $heure) {
-                $trajet = Trajet::find($heure['trajet_id']);
+                // 3. Insérer les trajets et escales avec les heures de départ et d'arrivée
+                foreach ($request->heures as $heure) {
+                    $trajet = Trajet::find($heure['trajet_id']);
 
-                // On récupère l'arrêt de départ et d'arrivée pour l'escale
-                $departId = $trajet->depart_id;
-                $arriveeId = $trajet->arrivee_id;
+                    // On récupère l'arrêt de départ et d'arrivée pour l'escale
+                    $departId = $trajet->depart_id;
+                    $arriveeId = $trajet->arrivee_id;
 
-                // Création de l'escale
-                Escale::create([
-                    'voyage_id' => $voyage->id,
-                    'arret_id' => $departId, // Arrêt de départ
-                    'heure_depart' => $heure['heure_depart'],
-                    'heure_arrivee' => $heure['heure_arrivee'],
-                    'places_disponibles' => 30, // Par exemple, définir des places par défaut ou gérer dynamiquement
-                ]);
+                    // Création de l'escale
+                    Escale::create([
+                        'voyage_id' => $voyage->id,
+                        'arret_id' => $departId, // Arrêt de départ
+                        'heure_depart' => $heure['heure_depart'],
+                        'heure_arrivee' => $heure['heure_arrivee'],
+                        'places_disponibles' => 30, // Par exemple, définir des places par défaut ou gérer dynamiquement
+                    ]);
 
-                // Création d'une escale pour l'arrêt d'arrivée, si nécessaire
-                Escale::create([
-                    'voyage_id' => $voyage->id,
-                    'arret_id' => $arriveeId, // Arrêt d'arrivée
-                    'heure_depart' => $heure['heure_depart'], // Ou une autre logique si tu veux utiliser des heures différentes
-                    'heure_arrivee' => $heure['heure_arrivee'],
-                    'places_disponibles' => 30,
-                ]);
+                    // Création d'une escale pour l'arrêt d'arrivée, si nécessaire
+                    Escale::create([
+                        'voyage_id' => $voyage->id,
+                        'arret_id' => $arriveeId, // Arrêt d'arrivée
+                        'heure_depart' => $heure['heure_depart'], // Ou une autre logique si tu veux utiliser des heures différentes
+                        'heure_arrivee' => $heure['heure_arrivee'],
+                        'places_disponibles' => 30,
+                    ]);
+                }
+
+                $voyages[] = $voyage;
             }
 
             // 4. Commit de la transaction si tout va bien
@@ -195,7 +200,7 @@ class VoyageController extends Controller
 
             return response()->json([
                 'message' => 'Voyage créé avec succès!',
-                'data' => $voyage,
+                'data' => $voyages,
             ], 201);
         } catch (Exception $e) {
             // Annuler la transaction en cas d'erreur

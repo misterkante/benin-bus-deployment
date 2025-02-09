@@ -55,7 +55,8 @@ class Voyage extends Model
 	{
 		return $this->belongsToMany(Bu::class, 'bu_voyages', 'voyage_id', 'bus_id')
 					->withPivot('id')
-					->withTimestamps();
+					->withTimestamps()
+                    ;
 	}
 
 	public function tickets()
