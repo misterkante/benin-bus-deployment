@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bu;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Voyage;
 use App\Models\Paiement;
@@ -21,8 +22,9 @@ class DashboardDataController extends Controller
         $voyages = Voyage::all()->count();
 
         // Profit total généré,
-        $profit = Paiement::all()->sum('montant');
-
+        $profit = Paiement::whereBetween('date_paiement', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+        ->sum('montant');
+        
         return response()->json([
             'users' => $users,
             'bus' => $bus,
