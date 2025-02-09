@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 
+use Exception;
+use Carbon\Carbon;
 use App\Models\Ticket;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TicketController extends Controller
 {
@@ -16,6 +20,7 @@ class TicketController extends Controller
         $tickets = Ticket::with(['trajet.depart', 'trajet.arrivee'])->get();
         return response()->json($tickets, 200);
     }
+
 
     // Générateur de code de tickets
     public function genererCodeUnique()
@@ -77,6 +82,48 @@ class TicketController extends Controller
             return response()->json([
                 'message' => 'Une erreur est survenue lors de la création du ticket',
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    // Afficher les billets pour les voyages à venir
+    public function next_tickets(Request $request)
+    {
+        try {
+            $tickets = Ticket::with(['voyage:id,date_voyage,heure_depart', 'trajet.depart:id,nom', 'trajet.arrivee:id,nom', ])
+            ->whereHas('voyage', function ($query) {
+                $query->where('date_voyage', '>=', Carbon::now()); // Voyages futurs uniquement
+            })
+                ->where('user_id', '=', $request->user()->id)
+                ->get();
+
+            // Vérifier si des voyages sont trouvés
+            if ($tickets->isEmpty()) {
+                return response()->json([
+                    'message' => 'Aucune réservation de tickets a venir',
+                ], 404);
+            }
+
+            return response()->json($tickets, 200);
+
+        } catch (QueryException $e) {
+            // Gestion des erreurs de requête (par exemple, problème de base de données)
+            return response()->json([
+                'error' => 'Erreur lors de la récupération des données.',
+                'message' => $e->getMessage(),
+            ], 500);
+        } catch (ModelNotFoundException $e) {
+            // Gestion d'une erreur spécifique si aucun modèle n'a été trouvé
+            return response()->json([
+                'error' => 'Modèle non trouvé.',
+                'message' => $e->getMessage(),
+            ], 404);
+        } catch (Exception $e) {
+            // Gestion de toutes les autres erreurs
+            return response()->json([
+                'error' => 'Une erreur interne s\'est produite.',
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
