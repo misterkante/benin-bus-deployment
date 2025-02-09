@@ -63,6 +63,12 @@ class TicketController extends Controller
 
             $validated = $validator->validated();
             $validated['user_id'] = $request->user()->id;
+
+            $busId = Voyage::find($request->voyage_id)
+                ->buses() // Accéder à la relation avec les bus via la table pivot
+                ->first()
+                ->id;
+            $validated['bus_id'] = $busId;
             $tickets = [];
 
             foreach ($validated['sieges'] as $siege) {
@@ -141,44 +147,43 @@ class TicketController extends Controller
     {
         try {
             // Validation des données de la requête
-        $validator = Validator::make($request->all(), [
-            'voyage_id' => 'required|exists:voyages,id'
-        ]);
+            $validator = Validator::make($request->all(), [
+                'voyage_id' => 'required|exists:voyages,id'
+            ]);
 
-        // Si la validation échoue, retourner les erreurs
-        if ($validator->fails()) {
+            // Si la validation échoue, retourner les erreurs
+            if ($validator->fails()) {
+                return response()->json([
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $busId = Voyage::find($request->voyage_id)
+                ->buses() // Accéder à la relation avec les bus via la table pivot
+                ->first()
+                ->id;
+
+
+            $totalSeat = Bu::where('id', "=", $busId)
+                ->pluck('places');
+
+            $seatBooked = Ticket::where('voyage_id', '=', $request->voyage_id)->pluck('code_ticket');
+
+            $totalSeatBooked = $seatBooked->count();
+
+            $bookedSeatNumbers =  $bookedSeatNumbers = $seatBooked->implode(',');;
+
             return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $busId = Voyage::find($request->voyage_id)
-        ->buses() // Accéder à la relation avec les bus via la table pivot
-        ->first()
-        ->id;
-
-
-        $totalSeat = Bu::where('id', "=", $busId)
-            ->pluck('places');
-
-        $seatBooked = Ticket::where('voyage_id', '=', $request->voyage_id)->pluck('code_ticket');
-
-        $totalSeatBooked = $seatBooked->count();
-
-        $bookedSeatNumbers =  $bookedSeatNumbers = $seatBooked->implode(',');;
-
-        return response()->json([
-            'totalSeat' => $totalSeat,
-            'bookedSeatNumbers' => $bookedSeatNumbers,
-            'totalSeatBooked' => $totalSeatBooked
-        ], 200);
-        }catch (Exception $e) {
+                'totalSeat' => $totalSeat,
+                'bookedSeatNumbers' => $bookedSeatNumbers,
+                'totalSeatBooked' => $totalSeatBooked
+            ], 200);
+        } catch (Exception $e) {
             return response()->json([
                 'error' => "Une erreur est survenue lors du traitement.",
                 'message' => $e->getMessage()
             ], 500);
         }
-
     }
     // Affiche les détails d’un ticket
     public function show($id)
