@@ -167,7 +167,7 @@ class TicketController extends Controller
             $totalSeat = Bu::where('id', "=", $busId)
                 ->pluck('places');
 
-            $seatBooked = Ticket::where('voyage_id', '=', $request->voyage_id)->pluck('code_ticket');
+            $seatBooked = Ticket::where('voyage_id', '=', $request->voyage_id)->pluck('siege');
 
             $totalSeatBooked = $seatBooked->count();
 
